@@ -2,7 +2,9 @@
 
 ## Contributors:
 Brandon Phan
+
 Johnny Garnica
+
 Reis Cook
 
 
