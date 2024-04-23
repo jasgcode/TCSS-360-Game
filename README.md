@@ -1,6 +1,6 @@
 # TCSS-360-Game
 
-# Contributors:
+## Contributors:
 Brandon Phan
 Johnny Garnica
 Reis Cook
