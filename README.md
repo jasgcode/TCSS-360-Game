@@ -1,5 +1,11 @@
 # TCSS-360-Game
 
+# Contributors:
+Brandon Phan
+Johnny Garnica
+Reis Cook
+
+
 Python Trivia Maze Game Project Overview:
 
 •	A Python-based game where players navigate a maze and answer alcohol-related trivia questions.
