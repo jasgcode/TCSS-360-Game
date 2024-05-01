@@ -2,7 +2,7 @@ import random
 
 class TriviaManager:
     """
-    Trivia manager class for the Python Trivia Maze Game.
+    The Trivia manager class for the Python Trivia Maze Game.
     Manages the trivia questions and handles the question selection and answer verification.
     """
 
