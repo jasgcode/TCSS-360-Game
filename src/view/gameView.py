@@ -1,4 +1,5 @@
 import pygame
+## The GameView class is responsible for rendering the game state, displaying menus, and user interface elements.
 
 class GameView:
     """
