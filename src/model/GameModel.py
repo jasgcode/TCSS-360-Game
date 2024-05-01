@@ -1,6 +1,5 @@
 import random
 
-
 class GameModel:
     """
     The model class for the Python Trivia Maze Game.
