@@ -1,5 +1,5 @@
 import pygame
-
+# The SoundManager class is responsible for managing sound effects and background music in the game.
 class SoundManager:
     """
     The sound manager class for the Python Trivia Maze Game.

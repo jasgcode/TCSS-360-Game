@@ -1,5 +1,5 @@
 import sqlite3
-
+# This script creates a SQLite database and populates it with some trivia questions.
 def create_database():
     conn = sqlite3.connect('trivia.db')
     cursor = conn.cursor()
