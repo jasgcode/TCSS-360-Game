@@ -22,11 +22,23 @@ class TriviaManager:
         # TODO: Implement the logic to load questions from a file or database
         # For simplicity, we'll use a hardcoded list of questions for demonstration purposes
         questions = [
-            Question("What is the capital of France?", ["Paris", "London", "Berlin", "Madrid"], 1),
-            Question("What is the largest planet in our solar system?", ["Jupiter", "Saturn", "Neptune", "Uranus"], 1),
-            Question("What is the currency of Japan?", ["Yen", "Dollar", "Euro", "Pound"], 1),
+            Question("What are the four main ingredients in beer?", ["Grain, hops, yeast, and water", "Grain, sugar, yeast, and water", "Hops, malt, yeast, and milk", "Grain, hops, yeast, and juice"], 0),
+            Question("What drink uses Orange juice, Pineapple juice, Lime juice, Rum, and Grenadine?", ["Caribbean Rum", "Mojito", "Margarita", "Piña Colada"], 0),
+            Question("Guinness beer was first brewed in which country?", ["Ireland", "Scotland", "England", "Germany"], 0),
+            Question("What popular soda beverage was originally developed as a mixer for whiskey?", ["Mountain Dew", "Coca Cola", "Sprite", "Dr. Pepper"], 0),
+            Question("To be legally sold as bourbon, a whiskey's mash must contain at least 51% of what grain?", ["Wheat", "Corn", "Rye", "Barley"], 1),
+            Question("Champagne is a sparkling wine made from grapes grown in the Champagne region of which country?", ["France", "Italy", "Spain", "United States"], 0),
+            Question("A Moscow Mule is a type of cocktail popularly served in what?", ["Copper Mug", "Martini Glass", "Highball Glass", "Shot Glass"], 0),
+            Question("If a liquor is 100 proof how much alcohol does it contain by percentage?", ["50 Percent", "25 Percent", "75 Percent", "100 Percent"], 0),
+            Question("What is the national drink of Mexico?", ["Tequila", "Mezcal", "Margarita", "Paloma"], 0),
+            Question("What is the main ingredient in gin?", ["Juniper berries", "Vodka", "Whiskey", "Rum"], 0),
             # Add more questions here
         ]
+
+        # Shuffle the answer choices for each question
+        for question in questions:
+            random.shuffle(question.choices)
+
         return questions
 
     def set_difficulty_level(self, difficulty_level):
