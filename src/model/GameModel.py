@@ -26,12 +26,19 @@ class Maze:
         self.generate_maze()
 
     def generate_maze(self):
-        # Implement your maze generation algorithm here
-        pass
+        # Generate a simple maze grid
+        self.grid = [
+            [True, True, True, True, True],
+            [True, False, False, False, True],
+            [True, True, True, False, True],
+            [True, False, True, False, True],
+            [True, False, True, True, True]
+        ]
+        self.width = len(self.grid[0])
+        self.height = len(self.grid)
 
     def is_walkable(self, position):
         return 0 <= position.x < self.width and 0 <= position.y < self.height and self.grid[position.y][position.x]
-
 
 class GameModel:
     def __init__(self):
