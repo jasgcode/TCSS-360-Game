@@ -6,15 +6,15 @@ class SoundManager:
     Handles the loading and playback of sound effects and background music.
     """
 
-    def __init__(self):my
-        """
-        Initializes the sound manager.
-        Loads the sound effects and background music.
-        """
-        pygame.mixer.init()
-        self.sound_effects = self.load_sound_effects()
-        self.background_music = self.load_background_music()
-        self.is_music_playing = False
+    # def __init__(self):my
+    #     """
+    #     Initializes the sound manager.
+    #     Loads the sound effects and background music.
+    #     """
+    #     pygame.mixer.init()
+    #     self.sound_effects = self.load_sound_effects()
+    #     self.background_music = self.load_background_music()
+    #     self.is_music_playing = False
 
     def load_sound_effects(self):
         """
