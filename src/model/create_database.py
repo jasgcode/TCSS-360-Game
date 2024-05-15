@@ -17,27 +17,27 @@ def create_database():
     conn.commit()
     conn.close()
 
+    #
 def populate_database():
     questions = [
         {
-            'question_text': 'What is the capital of France?',
-            'answer_choices': 'London|Paris|Berlin|Madrid',
-            'correct_answer_index': 1,
+            'question_text': 'What is the main ingredient in beer that gives it its alcohol content?',
+            'answer_choices': 'Hops|Water|Yeast|Malt',
+            'correct_answer_index': 2,
             'difficulty': 'easy'
         },
         {
-            'question_text': 'What is the largest planet in our solar system?',
-            'answer_choices': 'Mars|Jupiter|Saturn|Neptune',
-            'correct_answer_index': 1,
+            'question_text': 'Which country consumes the most beer per capita?',
+            'answer_choices': 'USA|Germany|Czech Republic|Ireland',
+            'correct_answer_index': 2,
             'difficulty': 'medium'
         },
         {
-            'question_text': 'Who painted the Mona Lisa?',
-            'answer_choices': 'Leonardo da Vinci|Vincent van Gogh|Pablo Picasso|Michelangelo',
-            'correct_answer_index': 0,
-            'difficulty': 'easy'
-        },
-        # Add more questions here
+            'question_text': 'What is the technical term for the fear of running out of beer?',
+            'answer_choices': 'Humulonephobia|Zythophobia|Cenosillicaphobia|Lagerstalgia',
+            'correct_answer_index': 2,
+            'difficulty': 'hard'
+        }
     ]
 
     conn = sqlite3.connect('trivia.db')
