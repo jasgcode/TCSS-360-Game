@@ -1,89 +1,92 @@
-class GameView:
-    """
-    Renders the game and handles user input.
-    """
+import pygame
+from src.model.GameModel import GameModel
+from src.model.GameModel import Position
 
-    def __init__(self):
-        """
-        Initializes the GameView.
-        """
-        self.game_model = None
 
-    def set_game_model(self, game_model):
-        """
-        Sets the game model for the view.
+class gameView:
+    def __init__(self, window_width, window_height):
+        self.model = GameModel()
+        self.window_width = window_width
+        self.window_height = window_height
+        self.cell_size = 0
+        pygame.font.init()  # Initialize Pygame's font subsystem
+        self.font = pygame.font.Font(None, 36)
+        self.color_bg = (255, 255, 255)
+        self.color_wall = (0, 0, 0)
+        self.color_player = (255, 0, 0)
+        self.color_text = (0, 0, 0)
 
-        :param game_model: The GameModel object representing the game state and logic.
-        """
-        self.game_model = game_model
+        # Initialize the game model's maze
+        self.model.set_difficulty_level("Easy")  # Set the difficulty level
+        self.model.maze = self.model.generate_maze()  # Generate the initial maze
 
-    def display_main_menu(self):
-        """
-        Displays the main menu of the game.
-        """
-        print("Welcome to the Trivia Maze Game!")
-        print("1. Start Game")
-        print("2. Quit")
-        # Implement the logic to handle user input and return the selected option
+    def run(self):
+        pygame.init()
+        screen = pygame.display.set_mode((self.window_width, self.window_height))
+        pygame.display.set_caption("Python Trivia Maze Game")
+        clock = pygame.time.Clock()
 
-    def should_start_game(self) -> bool:
-        """
-        Determines if the game should start based on user input.
+        self.update_maze_dimensions()
+        self.model.initialize_game()
 
-        :return: True if the game should start, False otherwise.
-        """
-        # Implement the logic to check if the user selected to start the game
-        return False
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        self.model.move_player(Position(0, -1))
+                    elif event.key == pygame.K_DOWN:
+                        self.model.move_player(Position(0, 1))
+                    elif event.key == pygame.K_LEFT:
+                        self.model.move_player(Position(-1, 0))
+                    elif event.key == pygame.K_RIGHT:
+                        self.model.move_player(Position(1, 0))
 
-    def should_quit_game(self) -> bool:
-        """
-        Determines if the game should quit based on user input.
+            screen.fill(self.color_bg)
+            self.draw_maze(screen)
+            self.draw_player(screen)
+            self.draw_score(screen)
 
-        :return: True if the game should quit, False otherwise.
-        """
-        # Implement the logic to check if the user selected to quit the game
-        return False
+            pygame.display.flip()
+            clock.tick(60)
 
-    def render_game(self):
-        """
-        Renders the current state of the game.
-        """
-        # Implement the logic to render the game, including the maze, player position, score, lives, etc.
-        print("Rendering the game...")
+            self.model.update_game_state()
 
-    def get_player_move(self) -> str:
-        """
-        Gets the player's move input.
+            if self.model.is_game_over():
+                running = False
 
-        :return: The direction of the player's move ("up", "down", "left", "right").
-        """
-        # Implement the logic to get the player's move input
-        return ""
+        pygame.quit()
 
-    def display_trivia_question(self, question):
-        """
-        Displays a trivia question and its answer choices.
+    def update_maze_dimensions(self):
+        # Calculate the cell size based on the window dimensions
+        self.cell_size = min(self.window_width // self.model.maze.width,
+                             self.window_height // self.model.maze.height)
 
-        :param question: The question tuple containing the question details.
-        """
-        print("Question:", question[0])
-        print("Answer Choices:")
-        for i, choice in enumerate(question[1]):
-            print(f"{i + 1}. {choice}")
+        # Update the maze dimensions based on the cell size
+        self.model.maze.width = self.window_width // self.cell_size
+        self.model.maze.height = self.window_height // self.cell_size
 
-    def get_player_answer(self) -> int:
-        """
-        Gets the player's answer to the trivia question.
+    def draw_maze(self, screen):
+        for y in range(self.model.maze.height):
+            for x in range(self.model.maze.width):
+                if not self.model.maze.is_walkable(Position(x, y)):
+                    pygame.draw.rect(screen, self.color_wall,
+                                     (x * self.cell_size, y * self.cell_size, self.cell_size, self.cell_size))
 
-        :return: The index of the player's selected answer.
-        """
-        # Implement the logic to get the player's answer input
-        return 0
+    def draw_player(self, screen):
+        x, y = self.model.player.position.x, self.model.player.position.y
+        pygame.draw.circle(screen, self.color_player,
+                           (x * self.cell_size + self.cell_size // 2, y * self.cell_size + self.cell_size // 2),
+                           self.cell_size // 2)
 
-    def display_game_over(self):
-        """
-        Displays the game over screen.
-        """
-        print("Game Over!")
-        print("Final Score:", self.game_model.score)
-        # Implement the logic to display the game over screen, high scores, etc.
+    def draw_score(self, screen):
+        text = self.font.render(f"Score: {self.model.score}", True, self.color_text)
+        screen.blit(text, (10, 10))
+
+
+if __name__ == "__main__":
+    window_width, window_height = 800, 600
+    view = gameView(window_width, window_height)
+    view.run()
