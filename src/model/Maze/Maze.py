@@ -1,4 +1,4 @@
-class Maze:
+    class Maze:
     def __init__(self, layout):
         self.layout = layout
         self.height = len(layout)
