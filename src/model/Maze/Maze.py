@@ -4,6 +4,7 @@ from src.model.Maze.Cells import Cells
 
 
 class Maze:
+
     def __init__(self, width, height):
         if width % 2 == 0:
             width += 1
@@ -17,6 +18,7 @@ class Maze:
 
     def create(self):
         maze = np.ones((self.height, self.width), dtype=float)
+        randomVar = random.randrange(2, 25, 2)
 
         randomVar = random.randrange(2, 25, 2)
 
