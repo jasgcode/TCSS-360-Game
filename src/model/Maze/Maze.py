@@ -1,42 +1,45 @@
+import random
+import numpy as np
+from src.model.Maze.Cells import Cells
+
+
 class Maze:
-    def __init__(self, layout):
-        self.layout = layout
-        self.height = len(layout)
-        self.width = len(layout[0])
+    def __init__(self, width, height):
+        if width % 2 == 0:
+            width += 1
+        if height % 2 == 0:
+            height += 1
 
-    def is_wall(self, x, y):
-        return self.layout[y][x] == '#'
+        self.width = width
+        self.height = height
+        self.Cells = Cells()
+        self.maze = None
 
-    def is_valid_move(self, x, y):
-        return 0 <= x < self.width and 0 <= y < self.height and not self.is_wall(x, y)
+    def create(self):
+        maze = np.ones((self.height, self.width), dtype=float)
 
-    def get_neighbors(self, x, y):
-        neighbors = []
-        for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
-            nx, ny = x + dx, y + dy
-            if self.is_valid_move(nx, ny):
-                neighbors.append((nx, ny))
-        return neighbors
+        for i in range(self.height):
+            for j in range(self.width):
+                if i % 2 == 1 or j % 2 == 1:
+                    maze[i, j] = 0
+                if i == 0 or j == 0 or i == self.height - 1 or j == self.width - 1:
+                    maze[i, j] = 0.5
 
-    def find_path(self, start_x, start_y, end_x, end_y):
-        visited = [[False] * self.width for _ in range(self.height)]
-        path = []
+        sx = random.choice(range(2, self.width - 2, 2))
+        sy = random.choice(range(2, self.height - 2, 2))
 
-        def dfs(x, y):
-            if x == end_x and y == end_y:
-                path.append((x, y))
-                return True
-            visited[y][x] = True
-            for nx, ny in self.get_neighbors(x, y):
-                if not visited[ny][nx]:
-                    if dfs(nx, ny):
-                        path.append((x, y))
-                        return True
-            return False
+        self.Cells.generater(sx, sy, maze)
 
-        dfs(start_x, start_y)
-        path.reverse()
-        return path
+        for i in range(self.height):
+            for j in range(self.width):
+                if maze[i, j] == 0.5:
+                    maze[i, j] = 1
 
-    def __str__(self):
-        return '\n'.join(''.join(row) for row in self.layout)
+        maze[1, 2] = 1
+        maze[self.height - 2, self.width - 3] = 1
+        self.maze = maze
+        return maze
+
+    def is_walkable(self, position):
+        return (self.width > position.x >= 0 != self.maze[
+            position.y, position.x] and 0 <= position.y < self.height)  # Check if the cell is not a wall
