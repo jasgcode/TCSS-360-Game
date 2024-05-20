@@ -3,45 +3,20 @@ class Position:
         self.x = x
         self.y = y
 
-    def getX(self):
-        return self.x
+    def __add__(self, other):
+        return Position(self.x + other.x, self.y + other.y)
 
-    def getY(self):
-        return self.y
+    def is_valid(self, maze):
+        return 0 <= self.x < maze.width and 0 <= self.y < maze.height
 
+    def is_walkable(self, maze):
+        return maze.is_walkable(self)
 
 class Player:
-    def __init__(self, position, lives, score):
+    def __init__(self, position):
         self.position = position
-        self.lives = lives
-        self.score = score
 
-    def move(self, direction):
-        # Update the player's position based on the given direction
-        if direction == "up":
-            self.position.y -= 1
-        elif direction == "down":
-            self.position.y += 1
-        elif direction == "left":
-            self.position.x -= 1
-        elif direction == "right":
-            self.position.x += 1
-
-    def answerQuestion(self, answer, question):
-        if answer == question.getCorrectAnswer():
-            self.score += 1
-            print("Correct answer! Score:", self.score)
-            return True
-        else:
-            self.lives -= 1
-            print("Wrong answer! Lives remaining:", self.lives)
-            return False
-
-    def getPosition(self):
-        return self.position
-
-    def getLives(self):
-        return self.lives
-
-    def getScore(self):
-        return self.score
+    def move(self, direction, maze):
+        new_position = self.position + direction
+        if new_position.is_valid(maze) and new_position.is_walkable(maze):
+            self.position = new_position
