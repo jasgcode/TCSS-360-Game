@@ -17,6 +17,6 @@ class Player:
         self.position = position
 
     def move(self, direction, maze):
-        new_position = self.position + direction
+        new_position = Position(self.position.x + direction.x, self.position.y + direction.y)
         if new_position.is_valid(maze) and new_position.is_walkable(maze):
             self.position = new_position
