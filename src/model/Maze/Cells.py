@@ -4,7 +4,7 @@ import random
 
 class Cells:
 
-    def generater(self, cx, cy, grid):
+    def generator(self, cx, cy, grid):
         grid[cy, cx] = 0.5
         if cx < 0 or cx >= grid.shape[1] or cy < 0 or cy >= grid.shape[0]:
             return
@@ -22,20 +22,20 @@ class Cells:
                 dir = random.choice(li)
                 li.remove(dir)
 
-                if dir == Directions.UP.value:
+                if dir == _Directions.UP.value:
                     ny = cy - 2
                     my = cy - 1
-                elif dir == Directions.DOWN.value:
+                elif dir == _Directions.DOWN.value:
                     ny = cy + 2
                     my = cy + 1
                 else:
                     ny = cy
                     my = cy
 
-                if dir == Directions.LEFT.value:
+                if dir == _Directions.LEFT.value:
                     nx = cx - 2
                     mx = cx - 1
-                elif dir == Directions.RIGHT.value:
+                elif dir == _Directions.RIGHT.value:
                     nx = cx + 2
                     mx = cx + 1
                 else:
@@ -50,10 +50,10 @@ class Cells:
                         grid[ny, nx] != 0.5
                 ):
                     grid[my, mx] = 0.5
-                    self.generater(nx, ny, grid)
+                    self.generator(nx, ny, grid)
 
 
-class Directions(Enum):
+class _Directions(Enum):
     UP = 1
     DOWN = 2
     LEFT = 3
