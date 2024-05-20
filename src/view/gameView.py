@@ -16,9 +16,9 @@ class GameView:
         self.color_wall = (255, 255, 255)
         self.color_player = (255, 0, 0)
         self.color_text = (0, 0, 0)
-        self.menu_theme = pygame_menu.themes.THEME_BLUE.copy()
-        self.menu_theme.widget_font = pygame_menu.font.FONT_OPEN_SANS_BOLD
-        self.menu_theme.title_font = pygame_menu.font.FONT_OPEN_SANS_BOLD
+        self.menu_theme = (pygame_menu.themes.THEME_DARK.copy())
+        self.menu_theme.widget_font = pygame_menu.font.FONT_8BIT
+        self.menu_theme.title_font = pygame_menu.font.FONT_8BIT
         self.menu_theme.title_font_size = 24
         self.menu_theme.widget_font_size = 18
         self.player_speed = 0.1  # Adjust the player's movement speed
@@ -41,7 +41,7 @@ class GameView:
         background_image = pygame_menu.baseimage.BaseImage(image_path)
 
         # Set the menu theme with the background image
-        theme = pygame_menu.themes.THEME_BLUE.copy()
+        theme = pygame_menu.themes.THEME_DARK.copy()
         theme.background_color = background_image
 
         # Create the menu with the updated theme

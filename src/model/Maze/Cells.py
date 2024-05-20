@@ -4,7 +4,7 @@ import random
 
 class Cells:
 
-    def generater(self, cx, cy, grid):
+    def generator(self, cx, cy, grid):
         grid[cy, cx] = 0.5
         if cx < 0 or cx >= grid.shape[1] or cy < 0 or cy >= grid.shape[0]:
             return
@@ -50,7 +50,7 @@ class Cells:
                         grid[ny, nx] != 0.5
                 ):
                     grid[my, mx] = 0.5
-                    self.generater(nx, ny, grid)
+                    self.generator(nx, ny, grid)
 
 
 class Directions(Enum):

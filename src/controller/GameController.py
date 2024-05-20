@@ -1,5 +1,8 @@
 import pygame
 
+from src.model.Maze.Maze import Maze
+from src.model.TriviaManager.TriviaManager import TriviaManager
+
 
 class GameController:
     """
