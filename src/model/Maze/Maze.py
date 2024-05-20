@@ -17,6 +17,8 @@ class Maze:
 
     def create(self):
         maze = np.ones((self.height, self.width), dtype=float)
+        randomVar = random.randrange(2,25,2)
+
 
         for i in range(self.height):
             for j in range(self.width):
@@ -25,10 +27,10 @@ class Maze:
                 if i == 0 or j == 0 or i == self.height - 1 or j == self.width - 1:
                     maze[i, j] = 0.5
 
-        sx = random.choice(range(2, self.width - 2, 2))
-        sy = random.choice(range(2, self.height - 2, 2))
+        sx = random.choice(range(randomVar, self.width - 2, randomVar))
+        sy = random.choice(range(randomVar, self.height - 2, randomVar))
 
-        self.Cells.generater(sx, sy, maze)
+        self.Cells.generator(sx, sy, maze)
 
         for i in range(self.height):
             for j in range(self.width):
@@ -39,6 +41,7 @@ class Maze:
         maze[self.height - 2, self.width - 3] = 1
         self.maze = maze
         return maze
+
 
     def is_walkable(self, position):
         return (self.width > position.x >= 0 != self.maze[
