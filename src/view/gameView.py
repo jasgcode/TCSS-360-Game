@@ -26,7 +26,7 @@ class GameView:
     def run(self):
         pygame.init()
         self.screen = pygame.display.set_mode((self.window_width, self.window_height))
-        pygame.display.set_caption("Python Trivia Maze Game")
+        pygame.display.set_caption("Alcohol Trivia Maze Game")
         clock = pygame.time.Clock()
 
         self.model.set_difficulty_level("Easy")  # Set the difficulty level before initializing the game
@@ -36,8 +36,18 @@ class GameView:
         self.show_start_screen()
 
     def show_start_screen(self):
-        start_menu = pygame_menu.Menu('Python Trivia Maze Game', self.window_width, self.window_height,
-                                      theme=self.menu_theme)
+        # Load the image
+        image_path = "MainMenu.jpg"  # Make sure the image file is in the same directory as the script
+        background_image = pygame_menu.baseimage.BaseImage(image_path)
+
+        # Set the menu theme with the background image
+        theme = pygame_menu.themes.THEME_BLUE.copy()
+        theme.background_color = background_image
+
+        # Create the menu with the updated theme
+        start_menu = pygame_menu.Menu('Alcohol Trivia Maze Game', self.window_width, self.window_height,
+                                  theme=theme)
+
         start_menu.add.button('Start Game', self.start_game)
         start_menu.add.button('Settings', self.show_settings_menu)
         start_menu.add.button('Help', self.show_help_menu)
@@ -117,9 +127,13 @@ class GameView:
                         if mouse_pos[1] < 30:  # Check if the mouse is clicked in the menu bar area
                             if 10 <= mouse_pos[0] < 10 + self.font.size("File")[0]:
                                 self.show_file_menu()
-                            elif (10 + self.font.size("File")[0] + 20) <= mouse_pos[0] < (10 + self.font.size("File")[0] + 20 + self.font.size("Settings")[0]):
+                            elif (10 + self.font.size("File")[0] + 20) <= mouse_pos[0] < (
+                                    10 + self.font.size("File")[0] + 20 + self.font.size("Settings")[0]):
                                 self.show_settings_menu()
-                            elif (10 + self.font.size("File")[0] + 20 + self.font.size("Settings")[0] + 20) <= mouse_pos[0] < (10 + self.font.size("File")[0] + 20 + self.font.size("Settings")[0] + 20 + self.font.size("Help")[0]):
+                            elif (10 + self.font.size("File")[0] + 20 + self.font.size("Settings")[0] + 20) <= \
+                                    mouse_pos[0] < (
+                                    10 + self.font.size("File")[0] + 20 + self.font.size("Settings")[0] + 20 +
+                                    self.font.size("Help")[0]):
                                 self.show_help_menu()
 
             if not self.model.is_game_over():
@@ -149,6 +163,7 @@ class GameView:
             pygame.display.flip()
 
     pygame.quit()
+
     def audio_settings(self):
         # Implement the logic to configure audio settings
         pass
@@ -195,7 +210,8 @@ class GameView:
     def draw_player(self, screen):
         x, y = self.model.player.position.x, self.model.player.position.y
         pygame.draw.circle(screen, self.color_player,
-                           (int(x * self.cell_size + self.cell_size // 2), int(y * self.cell_size + self.cell_size // 2 + 30)),
+                           (int(x * self.cell_size + self.cell_size // 2),
+                            int(y * self.cell_size + self.cell_size // 2 + 30)),
                            self.cell_size // 2)
 
     def draw_score(self, screen):
