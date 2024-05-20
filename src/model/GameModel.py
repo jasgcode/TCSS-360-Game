@@ -1,44 +1,6 @@
-import random
-
-
-class Position:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __add__(self, other):
-        return Position(self.x + other.x, self.y + other.y)
-
-
-class Player:
-    def __init__(self, position):
-        self.position = position
-
-    def move(self, direction):
-        self.position += direction
-
-
-class Maze:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.grid = [[True] * width for _ in range(height)]
-        self.generate_maze()
-
-    def generate_maze(self):
-        # Generate a simple maze grid
-        self.grid = [
-            [True, True, True, True, True],
-            [True, False, False, False, True],
-            [True, True, True, False, True],
-            [True, False, True, False, True],
-            [True, False, True, True, True]
-        ]
-        self.width = len(self.grid[0])
-        self.height = len(self.grid)
-
-    def is_walkable(self, position):
-        return 0 <= position.x < self.width and 0 <= position.y < self.height and self.grid[position.y][position.x]
+from src.model.Maze.Maze import Maze
+from src.model.Player.Player import Player
+from src.model.Player.Player import Position
 
 class GameModel:
     def __init__(self):
@@ -49,25 +11,20 @@ class GameModel:
         self.difficulty_level = None
         self.trivia_question_interval = 0
         self.trivia_question_timer = 0
+        self.cell_size = 0
 
-    def initialize_game(self):
-        self.maze = self.generate_maze()
-        self.player = Player(Position(0, 0))
+    def initialize_game(self, width, height, cell_size):
+        self.maze = self.generate_maze(width, height)
+        self.player = Player(Position(0, 0))  # Starting position of the player
         self.score = 0
         self.timer = 0
         self.trivia_question_timer = 0
+        self.cell_size = cell_size
 
-    def generate_maze(self):
-        if self.difficulty_level == "Easy":
-            width = 10
-            height = 10
-        elif self.difficulty_level == "Medium":
-            width = 15
-            height = 15
-        else:  # "Hard"
-            width = 20
-            height = 20
-        return Maze(width, height)
+    def generate_maze(self, width, height):
+        maze = Maze(width, height)
+        maze.create()
+        return maze
 
     def set_difficulty_level(self, difficulty_level):
         self.difficulty_level = difficulty_level
@@ -83,13 +40,10 @@ class GameModel:
         self.trivia_question_timer += 1
 
     def move_player(self, direction):
-        new_position = self.player.position + direction
-        if self.maze.is_walkable(new_position):
-            self.player.move(direction)
-            self.score += 1
+        self.player.move(direction, self.maze)
 
     def is_game_over(self):
-        return self.player.position == Position(self.maze.width - 1, self.maze.height - 1)
+        return self.player.position == Position(self.maze.height - 2, self.maze.width - 3)
 
     def should_ask_trivia_question(self):
         return self.trivia_question_timer >= self.trivia_question_interval

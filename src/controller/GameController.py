@@ -1,4 +1,4 @@
-from src.TriviaManager.TriviaManager import TriviaManager
+import pygame
 
 
 class GameController:
