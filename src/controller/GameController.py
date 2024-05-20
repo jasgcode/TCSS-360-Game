@@ -31,6 +31,7 @@ class GameController:
                 self.run_game_loop()
             elif self.game_view.should_quit_game():
                 break
+        self.game_view.create_menu()
 
     def run_game_loop(self):
         """
