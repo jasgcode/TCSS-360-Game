@@ -17,7 +17,7 @@ class Maze:
 
     def create(self):
         maze = np.ones((self.height, self.width), dtype=float)
-        randomVar = random.randrange(2, 25, 2)
+        randomVar = random.randrange(2,25,2)
 
         for i in range(self.height):
             for j in range(self.width):

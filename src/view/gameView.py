@@ -180,7 +180,7 @@ class GameView:
         self.model.set_difficulty_level(selected_value)
 
     def how_to_play(self):
-        # Implement the logic to display instructions on how to play
+        self.font.render("How To Play", True, (255, 255, 255))
         pass
 
     def game_rules(self):

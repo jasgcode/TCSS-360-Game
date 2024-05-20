@@ -1,7 +1,5 @@
-import pygame
-
-from src.model.Maze.Maze import Maze
-from src.model.TriviaManager.TriviaManager import TriviaManager
+from src.model.GameModel import GameModel
+from src.view.gameView import GameView
 
 
 class GameController:
@@ -19,22 +17,8 @@ class GameController:
         self.game_model = game_model
         self.game_view = game_view
 
-    def start_game(self):
-        """
-        Starts the game by initializing the game model and view, and entering the main game loop.
-        """
-        self.game_model.set_maze(self.create_maze())
-        self.game_model.set_trivia_manager(self.create_trivia_manager())
-        self.game_view.set_game_model(self.game_model)
-
-        self.game_view.display_main_menu()
-        while True:
-            # Handle main menu events and actions
-            if self.game_view.should_start_game():
-                self.run_game_loop()
-            elif self.game_view.should_quit_game():
-                break
-        self.game_view.create_menu()
+    def initialize_game(self, width, height, cell_size):
+        return GameModel.initialize_game(self.game_model, width, height, cell_size)
 
     def run_game_loop(self):
         """
@@ -46,20 +30,12 @@ class GameController:
             # Handle player input and update the game state
             direction = self.game_view.get_player_move()
             self.game_model.move_player(direction)
-
             self.game_model.handle_trivia_question()
 
         self.game_view.display_game_over()
 
-    def create_maze(self):
-        """
-        Creates a new maze object for the game.
-
-        :return: The Maze object representing the game maze.
-        """
-        # Implement the logic to create a new maze object
-        # You can load the maze from a file, generate it randomly, or use a predefined layout
-        return Maze()
+    def generate_maze(self, width, height):
+        return GameModel.generate_maze(width, height)
 
     def create_trivia_manager(self):
         """
