@@ -20,6 +20,12 @@ class Maze:
         maze = np.ones((self.height, self.width), dtype=float)
         randomVar = random.randrange(2, 25, 2)
 
+        randomVar = random.randrange(2, 25, 2)
+
+        randomVar = random.randrange(2,25,2)
+
+
+
         for i in range(self.height):
             for j in range(self.width):
                 if i % 2 == 1 or j % 2 == 1:
@@ -41,6 +47,7 @@ class Maze:
         maze[self.height - 2, self.width - 3] = 1
         self.maze = maze
         return maze
+
 
     def is_walkable(self, position):
         return (self.width > position.x >= 0 != self.maze[
