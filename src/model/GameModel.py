@@ -55,6 +55,7 @@ import numpy as np
 from src.model.Maze.Maze import Maze
 from src.model.Player.Player import Player, Position
 
+
 class GameModel:
     def __init__(self):
         self.maze = None
@@ -72,7 +73,8 @@ class GameModel:
         self.timer = 0
         self.trivia_question_timer = 0
 
-    def generate_maze(self, width, height):
+    @staticmethod
+    def generate_maze(width, height):
         maze = Maze(width, height)
         maze.create()
         return maze
@@ -85,6 +87,10 @@ class GameModel:
             self.trivia_question_interval = 15
         else:  # "Hard"
             self.trivia_question_interval = 10
+
+    @staticmethod
+    def get_position(x, y):
+        return Position(x, y)
 
     def update_game_state(self):
         self.timer += 1
@@ -108,6 +114,7 @@ class GameModel:
     def answer_trivia_question_incorrectly(self):
         self.score -= 5
         self.trivia_question_timer = 0
+
 
     def set_difficulty_level(self, difficulty_level):
         self.difficulty_level = difficulty_level

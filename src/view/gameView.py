@@ -1,12 +1,13 @@
 import pygame
+
 import pygame_menu
 from src.model.GameModel import GameModel
 from src.model.Player.Player import Position
 
 
+
 class GameView:
     def __init__(self, window_width, window_height, cell_size):
-        self.model = GameModel()
         self.window_width = window_width
         self.window_height = window_height
         self.cell_size = cell_size
@@ -22,6 +23,19 @@ class GameView:
         self.menu_theme.title_font_size = 24
         self.menu_theme.widget_font_size = 18
         self.player_speed = 0.1  # Adjust the player's movement speed
+
+
+    def render_game(self, game_model, screen):
+        screen.fill(self.color_bg)
+        self.draw_maze(screen, game_model.maze)
+        self.draw_player(screen, game_model.player)
+        self.draw_score(screen, game_model.score)
+        pygame.display.flip()
+
+    def draw_maze(self, screen, maze):
+        for y in range(maze.height):
+            for x in range(maze.width):
+                if maze.maze[y, x] == 1:  # Check if the cell is a wall
 
     def run(self):
         pygame.init()
@@ -203,24 +217,40 @@ class GameView:
         for y in range(self.model.maze.height):
             for x in range(self.model.maze.width):
                 if self.model.maze.maze[y, x] == 1:  # Check if the cell is a wall
+
                     pygame.draw.rect(screen, self.color_wall,
                                      (x * self.cell_size, y * self.cell_size + 30,
                                       self.cell_size, self.cell_size))
 
-    def draw_player(self, screen):
-        x, y = self.model.player.position.x, self.model.player.position.y
+    def draw_player(self, screen, player):
+        x, y = player.position.x, player.position.y
         pygame.draw.circle(screen, self.color_player,
                            (int(x * self.cell_size + self.cell_size // 2),
                             int(y * self.cell_size + self.cell_size // 2 + 30)),
                            self.cell_size // 2)
+
+
+    def draw_score(self, screen, score):
+        text = self.font.render(f"Score: {score}", True, self.color_text)
+        screen.blit(text, (10, 10))
 
     def draw_score(self, screen):
         text = self.font.render(f"Score: {self.model.score}", True, self.color_text)
         screen.blit(text, (10, 40))
 
 
-if __name__ == "__main__":
-    window_width, window_height = 800, 600
-    cell_size = 20  # Adjust the cell size as needed
-    view = GameView(window_width, window_height, cell_size)
-    view.run()
+    @staticmethod
+    def get_user_input():
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "quit"
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    return "up"
+                elif event.key == pygame.K_DOWN:
+                    return "down"
+                elif event.key == pygame.K_LEFT:
+                    return "left"
+                elif event.key == pygame.K_RIGHT:
+                    return "right"
+        return None
