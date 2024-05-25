@@ -2,6 +2,7 @@ from src.model.Maze.Maze import Maze
 from src.model.Player.Player import Player
 from src.model.Player.Player import Position
 
+
 class GameModel:
     def __init__(self):
         self.maze = None
@@ -21,7 +22,8 @@ class GameModel:
         self.trivia_question_timer = 0
         self.cell_size = cell_size
 
-    def generate_maze(self, width, height):
+    @staticmethod
+    def generate_maze(width, height):
         maze = Maze(width, height)
         maze.create()
         return maze
@@ -34,6 +36,10 @@ class GameModel:
             self.trivia_question_interval = 15
         else:  # "Hard"
             self.trivia_question_interval = 10
+
+    @staticmethod
+    def get_position(x, y):
+        return Position(x, y)
 
     def update_game_state(self):
         self.timer += 1
