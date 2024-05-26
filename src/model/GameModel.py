@@ -16,7 +16,7 @@ class GameModel:
 
     def initialize_game(self, width, height, cell_size):
         self.maze = self.generate_maze(width, height)
-        self.player = Player(Position(1, 1))  # Starting position of the player
+        self.player = Player(Position(2, 1))  # Starting position of the player
         self.score = 0
         self.timer = 0
         self.trivia_question_timer = 0
