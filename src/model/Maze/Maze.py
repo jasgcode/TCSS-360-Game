@@ -25,9 +25,7 @@ class _Maze:
 
         randomVar = random.randrange(2, 25, 2)
 
-        randomVar = random.randrange(2,25,2)
-
-
+        randomVar = random.randrange(2, 25, 2)
 
         for i in range(self.height):
             for j in range(self.width):
@@ -50,7 +48,6 @@ class _Maze:
         maze[self.height - 2, self.width - 3] = 1
         self.maze = maze
 
-
     def is_walkable(self, position):
-        return (self.width > position.x >= 0 == self.maze[position.y, position.x] and
-                0 <= position.y < self.height)  # Check if the cell is a wall
+        return not (self.width > position.x >= 0 == self.maze[position.y, position.x] and
+                    0 <= position.y < self.height)  # Check if the cell is a wall

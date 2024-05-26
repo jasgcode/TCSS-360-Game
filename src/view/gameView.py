@@ -9,8 +9,8 @@ class GameView:
         self.cell_size = cell_size
         pygame.font.init()  # Initialize Pygame's font subsystem
         self.font = pygame.font.Font(None, 36)
-        self.color_bg = (0, 0, 0)
-        self.color_wall = (255, 255, 255)
+        self.color_bg = (255, 255, 255)
+        self.color_wall = (0, 0, 0)
         self.color_player = (255, 0, 0)
         self.color_text = (0, 0, 0)
 

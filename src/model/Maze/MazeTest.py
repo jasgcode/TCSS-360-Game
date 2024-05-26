@@ -21,7 +21,7 @@ class TestMaze(unittest.TestCase):
         self.assertEqual(maze.maze.shape, (height, width))
 
         # Check if the maze has a walkable path from start to end
-        start_pos = (1, 2)
+        start_pos = (3, 1 )
         end_pos = (height - 2, width - 3)
         self.assertEqual(maze.maze[start_pos[0], start_pos[1]], 1)
         self.assertEqual(maze.maze[end_pos[0], end_pos[1]], 1)
