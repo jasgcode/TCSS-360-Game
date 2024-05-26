@@ -1,9 +1,12 @@
 import random
+import sys
 import numpy as np
 from src.model.Maze.Cells import Cells
 
+sys.setrecursionlimit(8000)
 
-class Maze:
+
+class _Maze:
 
     def __init__(self, width, height):
         if width % 2 == 0:
@@ -27,21 +30,20 @@ class Maze:
                 if i == 0 or j == 0 or i == self.height - 1 or j == self.width - 1:
                     maze[i, j] = 0.5
 
-        sx = random.choice(range(randomVar, self.width - 2, randomVar))
-        sy = random.choice(range(randomVar, self.height - 2, randomVar))
+        sx = random.choice(range(randomVar, self.width - 1, randomVar))
+        sy = random.choice(range(randomVar, self.height - 1, randomVar))
 
         self.Cells.generator(sx, sy, maze)
 
         for i in range(self.height):
             for j in range(self.width):
-                if maze[i, j] == 0.5:
+                if maze[i, j] != 0:
                     maze[i, j] = 1
 
         maze[1, 2] = 1
         maze[self.height - 2, self.width - 3] = 1
         self.maze = maze
-        return maze
 
     def is_walkable(self, position):
-        return (self.width > position.x >= 0 != self.maze[
-            position.y, position.x] and 0 <= position.y < self.height)  # Check if the cell is not a wall
+        return (self.width > position.x >= 0 == self.maze[position.y, position.x] and
+                0 <= position.y < self.height)  # Check if the cell is a wall

@@ -12,6 +12,7 @@ class Position:
     def is_walkable(self, maze):
         return maze.is_walkable(self)
 
+
 class Player:
     def __init__(self, position):
         self.position = position

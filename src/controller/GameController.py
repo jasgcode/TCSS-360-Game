@@ -5,8 +5,11 @@ from src.view.gameView import GameView
 
 class GameController:
     def __init__(self, game_model, game_view):
+        self.window_width = window_width
+        self.window_height = window_height
+        self.cell_size = cell_size
         self.game_model = GameModel()
-        self.game_view = GameView(800, 600, 20)
+        self.game_view = GameView(900, 700, 20)
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
@@ -43,8 +46,8 @@ class GameController:
 
 
 if __name__ == "__main__":
-    window_width, window_height = 800, 600
-    cell_size = 20  # Adjust the cell size as needed
+    window_width, window_height = 1020, 800
+    cell_size = min(window_width, window_height)  # Adjust the cell size as needed
     game_model = GameModel()
     game_view = GameView(window_width, window_height, cell_size)
     game_controller = GameController(game_model, game_view)

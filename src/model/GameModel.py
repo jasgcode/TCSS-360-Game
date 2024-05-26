@@ -1,4 +1,4 @@
-from src.model.Maze.Maze import Maze
+from src.model.Maze.Maze import _Maze
 from src.model.Player.Player import Player
 from src.model.Player.Player import Position
 
@@ -16,7 +16,7 @@ class GameModel:
 
     def initialize_game(self, width, height, cell_size):
         self.maze = self.generate_maze(width, height)
-        self.player = Player(Position(0, 0))  # Starting position of the player
+        self.player = Player(Position(1, 1))  # Starting position of the player
         self.score = 0
         self.timer = 0
         self.trivia_question_timer = 0
@@ -24,7 +24,7 @@ class GameModel:
 
     @staticmethod
     def generate_maze(width, height):
-        maze = Maze(width, height)
+        maze = _Maze(width, height)
         maze.create()
         return maze
 

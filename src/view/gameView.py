@@ -2,6 +2,7 @@ import pygame
 
 
 class GameView:
+
     def __init__(self, window_width, window_height, cell_size):
         self.window_width = window_width
         self.window_height = window_height
@@ -23,7 +24,7 @@ class GameView:
     def draw_maze(self, screen, maze):
         for y in range(maze.height):
             for x in range(maze.width):
-                if maze.maze[y, x] == 1:  # Check if the cell is a wall
+                if maze.maze[y, x] == 0:  # Check if the cell is a wall
                     pygame.draw.rect(screen, self.color_wall,
                                      (x * self.cell_size, y * self.cell_size,
                                       self.cell_size, self.cell_size))
