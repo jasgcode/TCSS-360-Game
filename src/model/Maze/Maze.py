@@ -36,8 +36,8 @@ class _Maze:
                 if i == 0 or j == 0 or i == self.height - 1 or j == self.width - 1:
                     maze[i, j] = 0.5
 
-        sx = random.choice(range(randomVar, self.width - 1, randomVar))
-        sy = random.choice(range(randomVar, self.height - 1, randomVar))
+        sx = random.choice(range(randomVar, self.width - 2, randomVar))
+        sy = random.choice(range(randomVar, self.height - 2, randomVar))
 
         self.Cells.generator(sx, sy, maze)
 
