@@ -7,7 +7,7 @@ class Position:
         return Position(self.x + other.x, self.y + other.y)
 
     def is_valid(self, maze):
-        return 0 <= self.x < maze.width and 0 <= self.y < maze.height
+        return 0 < self.x < maze.width - 1 and 0 < self.y < maze.height - 1
 
     def is_walkable(self, maze):
         return maze.is_walkable(self)

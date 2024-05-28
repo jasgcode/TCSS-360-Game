@@ -9,7 +9,7 @@ class GameController:
         self.window_height = window_height
         self.cell_size = cell_size
         self.game_model = GameModel()
-        self.game_view = GameView(900, 700, 20)
+        self.game_view = GameView(1280, 720, 11)
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
@@ -46,7 +46,7 @@ class GameController:
 
 
 if __name__ == "__main__":
-    window_width, window_height = 1020, 800
+    window_width, window_height = 800, 600
     cell_size = min(window_width, window_height)  # Adjust the cell size as needed
     game_model = GameModel()
     game_view = GameView(window_width, window_height, cell_size)
