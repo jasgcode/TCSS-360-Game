@@ -7,6 +7,10 @@ from src.model.Entity.Entity import Position
 class GameModel:
     def __init__(self):
         self.maze = None
+        self.maze1 = None
+        self.maze2 = None
+        self.maze3 = None
+        self.maze4 = None
         self.player = None
         self.mob = None
         self.mob_hunt = None
@@ -18,7 +22,11 @@ class GameModel:
         self.cell_size = 0
 
     def initialize_game(self, width, height, cell_size):
-        self.maze = self.generate_maze(width, height)
+        self.maze1 = self.generate_maze(width, height)
+        self.maze2 = self.generate_maze(width, height)
+        self.maze3 = self.generate_maze(width, height)
+        self.maze4 = self.generate_maze(width, height)
+        self.maze = self.maze1
         self.player = Player(Position(2, 1))  # Starting position of the player
         self.mob = Mob(Position(width//2 - 2, 2))
         self.score = 0
