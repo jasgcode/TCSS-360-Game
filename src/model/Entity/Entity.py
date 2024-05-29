@@ -1,3 +1,13 @@
+class Entity:
+    def __init__(self, position):
+        self.position = position
+
+    def move(self, direction, maze):
+        new_position = Position(self.position.x + direction.x, self.position.y + direction.y)
+        if new_position.is_valid(maze) and new_position.is_walkable(maze):
+            self.position = new_position
+
+
 class Position:
     def __init__(self, x, y):
         self.x = x
@@ -11,13 +21,3 @@ class Position:
 
     def is_walkable(self, maze):
         return maze.is_walkable(self)
-
-
-class Player:
-    def __init__(self, position):
-        self.position = position
-
-    def move(self, direction, maze):
-        new_position = Position(self.position.x + direction.x, self.position.y + direction.y)
-        if new_position.is_valid(maze) and new_position.is_walkable(maze):
-            self.position = new_position

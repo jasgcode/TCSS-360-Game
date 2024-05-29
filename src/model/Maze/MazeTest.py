@@ -1,11 +1,11 @@
 import unittest
-from src.model.Maze.Maze import _Maze
+from src.model.Maze.Maze import Maze
 
 class TestMaze(unittest.TestCase):
     def test_create_maze(self):
         width = 21
         height = 21
-        maze = _Maze(height, width)
+        maze = Maze(height, width)
         maze.create()
 
         # Print the generated maze
