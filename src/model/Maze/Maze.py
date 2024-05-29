@@ -6,7 +6,7 @@ from src.model.Maze.Cells import Cells
 sys.setrecursionlimit(8000)
 
 
-class _Maze:
+class Maze:
 
     def __init__(self, width, height):
         if width % 2 == 0:

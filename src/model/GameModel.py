@@ -1,12 +1,15 @@
-from src.model.Maze.Maze import _Maze
-from src.model.Player.Player import Player
-from src.model.Player.Player import Position
+from src.model.Maze.Maze import Maze
+from src.model.Entity.Player import Player
+from src.model.Entity.Mob import Mob
+from src.model.Entity.Entity import Position
 
 
 class GameModel:
     def __init__(self):
         self.maze = None
         self.player = None
+        self.mob = None
+        self.mob_hunt = None
         self.score = 0
         self.timer = 0
         self.difficulty_level = None
@@ -17,6 +20,7 @@ class GameModel:
     def initialize_game(self, width, height, cell_size):
         self.maze = self.generate_maze(width, height)
         self.player = Player(Position(2, 1))  # Starting position of the player
+        self.mob = Mob(Position(width//2 - 2, 2))
         self.score = 0
         self.timer = 0
         self.trivia_question_timer = 0
@@ -24,7 +28,7 @@ class GameModel:
 
     @staticmethod
     def generate_maze(width, height):
-        maze = _Maze(width, height)
+        maze = Maze(width, height)
         maze.create()
         return maze
 
@@ -36,6 +40,7 @@ class GameModel:
             self.trivia_question_interval = 15
         else:  # "Hard"
             self.trivia_question_interval = 10
+            self.mob_hunt = True
 
     @staticmethod
     def get_position(x, y):
@@ -47,6 +52,11 @@ class GameModel:
 
     def move_player(self, direction):
         self.player.move(direction, self.maze)
+
+    def move_enemy(self, maze, position):
+        if self.mob_hunt is True:
+            self.mob.find_path_to_player(maze, position)
+            self.mob.move_along_path(self.mob, maze)
 
     def is_game_over(self):
         return self.player.position == Position(self.maze.height - 2, self.maze.width - 3)

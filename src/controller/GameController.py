@@ -19,7 +19,7 @@ class GameController:
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
                                         self.game_view.window_height // self.game_view.cell_size,
                                         self.game_view.cell_size)
-        self.game_model.set_difficulty_level("Easy")  # Set the difficulty level
+        self.game_model.set_difficulty_level("Hard")  # Set the difficulty level
 
         running = True
         while running:
@@ -35,14 +35,23 @@ class GameController:
             elif user_input == "right":
                 self.game_model.move_player(GameModel.get_position(1, 0))
 
+
             self.game_model.update_game_state()
 
             if self.game_model.is_game_over():
                 running = False
 
-            self.game_view.render_game(self.game_model, screen)
+            self.render_game(screen)
 
         pygame.quit()
+
+    def render_game(self, screen):
+        screen.fill(self.game_view.color_bg)
+        self.game_view.draw_maze(screen, self.game_model.maze)
+        self.game_view.draw_player(screen, self.game_model.player)
+        self.game_view.draw_enemy(screen, self.game_model.mob)
+        self.game_view.draw_score(screen, self.game_model.score)
+        pygame.display.flip()
 
 
 if __name__ == "__main__":

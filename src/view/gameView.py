@@ -11,15 +11,9 @@ class GameView:
         self.font = pygame.font.Font(None, 36)
         self.color_bg = (255, 255, 255)
         self.color_wall = (0, 0, 0)
-        self.color_player = (255, 0, 0)
+        self.color_player = (0, 0, 255)
+        self.color_mob = (255, 0, 0)
         self.color_text = (0, 0, 0)
-
-    def render_game(self, game_model, screen):
-        screen.fill(self.color_bg)
-        self.draw_maze(screen, game_model.maze)
-        self.draw_player(screen, game_model.player)
-        self.draw_score(screen, game_model.score)
-        pygame.display.flip()
 
     def draw_maze(self, screen, maze):
         for y in range(maze.height):
@@ -33,6 +27,11 @@ class GameView:
         x, y = player.position.x, player.position.y
         pygame.draw.circle(screen, self.color_player,
                            (x * self.cell_size + self.cell_size // 2, y * self.cell_size + self.cell_size // 2),
+                           self.cell_size // 2)
+
+    def draw_enemy(self, screen, mob):
+        x, y = mob.position.x, mob.position.y
+        pygame.draw.circle(screen, self.color_mob,(x * self.cell_size + self.cell_size // 2, y * self.cell_size + self.cell_size // 2),
                            self.cell_size // 2)
 
     def draw_score(self, screen, score):
