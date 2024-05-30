@@ -23,6 +23,7 @@ class GameController:
         running = True
         while running:
             user_input = self.game_view.get_user_input()
+
             if user_input == "quit":
                 running = False
             elif user_input == "up":
@@ -35,7 +36,21 @@ class GameController:
                 self.game_model.move_player(GameModel.get_position(1, 0))
 
             if self.game_model.check_mob_encounter():
-                print("Mob encounter triggered!")
+                mob_index = self.game_model.check_mob_encounter()
+                if mob_index is not None:
+                    print("Mob encounter triggered!")
+                    question = "What is the capital of France?"
+                    choices = ["London", "Paris", "Berlin", "Madrid"]
+                    correct_choice = 1  # Index of the correct choice
+                    is_correct = self.game_view.show_question_popup(screen, question, choices, correct_choice)
+                    if is_correct:
+                        print("Correct answer!")
+                        self.game_model.answer_trivia_question_correctly()
+                    else:
+                        print("Wrong answer!")
+                        self.game_model.answer_trivia_question_incorrectly()
+                    self.game_model.mobs[mob_index].fight = False
+                    self.game_model.despawn_mob(mob_index)
 
             self.game_model.update_game_state()
 
@@ -51,7 +66,8 @@ class GameController:
         self.game_view.draw_maze(screen, self.game_model.maze)
         self.game_view.draw_player(screen, self.game_model.player)
         for mob in self.game_model.mobs:
-            self.game_view.draw_enemy(screen, mob)
+            if mob.fight:
+                self.game_view.draw_enemy(screen, mob)
         self.game_view.draw_score(screen, self.game_model.score)
         pygame.display.flip()
 
