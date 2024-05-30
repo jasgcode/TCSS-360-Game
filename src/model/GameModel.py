@@ -78,10 +78,11 @@ class GameModel:
                 return position
 
     def check_mob_encounter(self):
-        for mob_position in self.mobs_positions:
+        for i, mob_position in enumerate(self.mobs_positions):
             if self.player.position.x == mob_position.x and self.player.position.y == mob_position.y:
-                return True
-        return False
+                if self.mobs[i].fight:
+                    return i
+        return None
 
 
     def move_player(self, direction):
@@ -92,6 +93,9 @@ class GameModel:
             self.mob.find_path_to_player(maze, position)
             self.mob.move_along_path(self.mob, maze)
 
+    def despawn_mob(self, mob_index):
+        self.mobs.pop(mob_index)
+        self.mobs_positions.pop(mob_index)
     def is_game_over(self):
         return self.player.position == Position(self.maze.height - 2, self.maze.width - 3)
 

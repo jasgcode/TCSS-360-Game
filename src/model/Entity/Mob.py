@@ -6,6 +6,7 @@ class Mob(Entity):
     def __init__(self, position):
         super().__init__(position)
         self.path = []
+        self.fight = True
 
     def find_path_to_player(self, maze, player_position):
         distance = [[float('inf')] * maze.width for _ in range(maze.height)]
