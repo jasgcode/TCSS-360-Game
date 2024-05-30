@@ -9,17 +9,16 @@ class GameController:
         self.window_height = window_height
         self.cell_size = cell_size
         self.game_model = GameModel()
-        self.game_view = GameView(1280, 720, 11)
+        self.game_view = GameView(1280, 720, 22)
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
         screen = pygame.display.set_mode(
             (self.game_view.window_width, self.game_view.window_height))  # Create a window surface
-
+        self.game_model.set_difficulty_level("Hard")
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
                                         self.game_view.window_height // self.game_view.cell_size,
                                         self.game_view.cell_size)
-        self.game_model.set_difficulty_level("Hard")  # Set the difficulty level
 
         running = True
         while running:
@@ -35,21 +34,24 @@ class GameController:
             elif user_input == "right":
                 self.game_model.move_player(GameModel.get_position(1, 0))
 
+            if self.game_model.check_mob_encounter():
+                print("Mob encounter triggered!")
 
             self.game_model.update_game_state()
 
             if self.game_model.is_game_over():
                 running = False
 
-            self.render_game(screen)
+            self.render_game(screen, self.game_model.difficulty_level)
 
         pygame.quit()
 
-    def render_game(self, screen):
+    def render_game(self, screen, difficulty):
         screen.fill(self.game_view.color_bg)
         self.game_view.draw_maze(screen, self.game_model.maze)
         self.game_view.draw_player(screen, self.game_model.player)
-        self.game_view.draw_enemy(screen, self.game_model.mob)
+        for mob in self.game_model.mobs:
+            self.game_view.draw_enemy(screen, mob)
         self.game_view.draw_score(screen, self.game_model.score)
         pygame.display.flip()
 
