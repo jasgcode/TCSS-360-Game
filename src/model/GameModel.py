@@ -2,6 +2,7 @@ from src.model.Maze.Maze import Maze
 from src.model.Entity.Player import Player
 from src.model.Entity.Mob import Mob
 from src.model.Entity.Entity import Position
+import random
 
 
 class GameModel:
@@ -12,11 +13,13 @@ class GameModel:
         self.maze3 = None
         self.maze4 = None
         self.player = None
-        self.mob = None
+        self.num_mobs = None
+        self.mobs = []
+        self.mobs_positions = []
         self.mob_hunt = None
         self.score = 0
         self.timer = 0
-        self.difficulty_level = None
+        self.difficulty_level = "Easy"
         self.trivia_question_interval = 0
         self.trivia_question_timer = 0
         self.cell_size = 0
@@ -28,7 +31,13 @@ class GameModel:
         self.maze4 = self.generate_maze(width, height)
         self.maze = self.maze1
         self.player = Player(Position(2, 1))  # Starting position of the player
-        self.mob = Mob(Position(width//2 - 2, 2))
+        self.mobs = []
+        self.mobs_positions = []
+        for _ in range(self.num_mobs):
+            mob_position = self.mob_spawn(self.maze)
+            self.mobs.append(Mob(mob_position))
+            self.mobs_positions.append(mob_position)
+
         self.score = 0
         self.timer = 0
         self.trivia_question_timer = 0
@@ -44,11 +53,13 @@ class GameModel:
         self.difficulty_level = difficulty_level
         if difficulty_level == "Easy":
             self.trivia_question_interval = 20
+            self.num_mobs = 5
         elif difficulty_level == "Medium":
             self.trivia_question_interval = 15
+            self.num_mobs = 10
         else:  # "Hard"
             self.trivia_question_interval = 10
-            self.mob_hunt = True
+            self.num_mobs = 25
 
     @staticmethod
     def get_position(x, y):
@@ -57,6 +68,21 @@ class GameModel:
     def update_game_state(self):
         self.timer += 1
         self.trivia_question_timer += 1
+
+    def mob_spawn(self, maze):
+        while True:
+            x = random.randrange(1, maze.width - 1)
+            y = random.randrange(1, maze.height - 1)
+            position = Position(x, y)
+            if position.is_valid(maze) and position.is_walkable(maze):
+                return position
+
+    def check_mob_encounter(self):
+        for mob_position in self.mobs_positions:
+            if self.player.position.x == mob_position.x and self.player.position.y == mob_position.y:
+                return True
+        return False
+
 
     def move_player(self, direction):
         self.player.move(direction, self.maze)
