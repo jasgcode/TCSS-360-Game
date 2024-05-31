@@ -13,7 +13,7 @@ class GameView:
         self.color_wall = (0, 0, 0)
         self.color_player = (0, 0, 255)
         self.color_mob = (255, 0, 0)
-        self.color_text = (0, 0, 0)
+        self.color_text = (0, 255, 0)
 
     def draw_maze(self, screen, maze):
         for y in range(maze.height):

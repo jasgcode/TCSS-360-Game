@@ -2,6 +2,7 @@ from src.model.Maze.Maze import Maze
 from src.model.Entity.Player import Player
 from src.model.Entity.Mob import Mob
 from src.model.Entity.Entity import Position
+from src.model.database import Database
 import random
 
 
@@ -12,8 +13,10 @@ class GameModel:
         self.maze2 = None
         self.maze3 = None
         self.maze4 = None
+        self.database = Database('/Users/johnny/TCSS-360-Game/src/model/data/trivia.db')
         self.player = None
         self.num_mobs = None
+
         self.mobs = []
         self.mobs_positions = []
         self.mob_hunt = None
@@ -84,7 +87,6 @@ class GameModel:
                     return i
         return None
 
-
     def move_player(self, direction):
         self.player.move(direction, self.maze)
 
@@ -96,6 +98,7 @@ class GameModel:
     def despawn_mob(self, mob_index):
         self.mobs.pop(mob_index)
         self.mobs_positions.pop(mob_index)
+
     def is_game_over(self):
         return self.player.position == Position(self.maze.height - 2, self.maze.width - 3)
 
@@ -109,3 +112,14 @@ class GameModel:
     def answer_trivia_question_incorrectly(self):
         self.score -= 5
         self.trivia_question_timer = 0
+
+    def get_trivia_question(self):
+        question = self.database.get_random_question(self.difficulty_level.lower())
+        if question:
+            question_text, answer_choices, correct_answer_index = question
+            return question_text, answer_choices, correct_answer_index
+        else:
+            return None
+
+    def __del__(self):
+        self.database.close()
