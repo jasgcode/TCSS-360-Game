@@ -2,20 +2,19 @@ import pygame
 from src.model.GameModel import GameModel
 from src.view.gameView import GameView
 
-
 class GameController:
     def __init__(self, game_model, game_view):
         self.window_width = window_width
         self.window_height = window_height
         self.cell_size = cell_size
         self.game_model = GameModel()
-        self.game_view = GameView(1280, 720, 22)
+        self.game_view = GameView(1280, 720, 25)
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
         screen = pygame.display.set_mode(
             (self.game_view.window_width, self.game_view.window_height))  # Create a window surface
-        self.game_model.set_difficulty_level("Hard")
+        self.game_model.set_difficulty_level("Medium")
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
                                         self.game_view.window_height // self.game_view.cell_size,
                                         self.game_view.cell_size)
@@ -35,14 +34,14 @@ class GameController:
             elif user_input == "right":
                 self.game_model.move_player(GameModel.get_position(1, 0))
 
-            if self.game_model.check_mob_encounter():
-                mob_index = self.game_model.check_mob_encounter()
-                if mob_index is not None:
-                    print("Mob encounter triggered!")
-                    question = "What is the capital of France?"
-                    choices = ["London", "Paris", "Berlin", "Madrid"]
-                    correct_choice = 1  # Index of the correct choice
-                    is_correct = self.game_view.show_question_popup(screen, question, choices, correct_choice)
+            mob_index = self.game_model.check_mob_encounter()
+            if mob_index is not None:
+                print("Mob encounter triggered!")
+                trivia_question = self.game_model.get_trivia_question()
+                if trivia_question:
+                    question_text, answer_choices, correct_answer_index = trivia_question
+                    is_correct = self.game_view.show_question_popup(screen, question_text, answer_choices,
+                                                                    correct_answer_index)
                     if is_correct:
                         print("Correct answer!")
                         self.game_model.answer_trivia_question_correctly()
