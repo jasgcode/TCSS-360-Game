@@ -31,7 +31,8 @@ class GameView:
 
     def draw_enemy(self, screen, mob):
         x, y = mob.position.x, mob.position.y
-        pygame.draw.circle(screen, self.color_mob,(x * self.cell_size + self.cell_size // 2, y * self.cell_size + self.cell_size // 2),
+        pygame.draw.circle(screen, self.color_mob,
+                           (x * self.cell_size + self.cell_size // 2, y * self.cell_size + self.cell_size // 2),
                            self.cell_size // 2)
 
     def draw_score(self, screen, score):
@@ -75,7 +76,8 @@ class GameView:
 
             for i, choice in enumerate(choices):
                 choice_text = self.font.render(choice, True, (0, 0, 0))
-                choice_rect = choice_text.get_rect(center=(popup_x + popup_width // 2, popup_y + 100 + i * choice_spacing))
+                choice_rect = choice_text.get_rect(
+                    center=(popup_x + popup_width // 2, popup_y + 100 + i * choice_spacing))
                 screen.blit(choice_text, choice_rect)
 
             pygame.display.flip()
@@ -94,4 +96,31 @@ class GameView:
                     return "left"
                 elif event.key == pygame.K_RIGHT:
                     return "right"
+        return None
+
+
+class MenuView:
+    def __init__(self, screen):
+        self.screen = screen
+        self.font = pygame.font.Font(None, 36)
+
+    def draw_menu(self):
+        self.screen.fill((255, 255, 255))
+        title_text = self.font.render("Main Menu", True, (0, 0, 0))
+        self.screen.blit(title_text, (self.screen.get_width() // 2 - title_text.get_width() // 2, 100))
+
+        difficulty_options = ["Easy", "Medium", "Hard"]
+        for i, option in enumerate(difficulty_options):
+            text = self.font.render(option, True, (0, 0, 0))
+            self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, 200 + i * 50))
+
+        pygame.display.flip()
+
+    def get_selected_difficulty(self, pos):
+        difficulty_options = ["Easy", "Medium", "Hard"]
+        for i, option in enumerate(difficulty_options):
+            text = self.font.render(option, True, (0, 0, 0))
+            rect = text.get_rect(center=(self.screen.get_width() // 2, 200 + i * 50))
+            if rect.collidepoint(pos):
+                return option
         return None
