@@ -1,20 +1,18 @@
 import pygame
 from src.model.GameModel import GameModel
-from src.view.gameView import GameView
+from src.model.MenuModel import MenuModel
+from src.view.gameView import GameView, MenuView
+
 
 class GameController:
     def __init__(self, game_model, game_view):
-        self.window_width = window_width
-        self.window_height = window_height
-        self.cell_size = cell_size
-        self.game_model = GameModel()
-        self.game_view = GameView(1280, 720, 25)
+        self.game_model = game_model
+        self.game_view = game_view
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
         screen = pygame.display.set_mode(
             (self.game_view.window_width, self.game_view.window_height))  # Create a window surface
-        self.game_model.set_difficulty_level("Medium")
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
                                         self.game_view.window_height // self.game_view.cell_size,
                                         self.game_view.cell_size)
@@ -39,9 +37,12 @@ class GameController:
                 print("Mob encounter triggered!")
                 trivia_question = self.game_model.get_trivia_question()
                 if trivia_question:
-                    question_text, answer_choices, correct_answer_index = trivia_question
-                    is_correct = self.game_view.show_question_popup(screen, question_text, answer_choices,
-                                                                    correct_answer_index)
+                    is_correct = self.game_view.show_question_popup(
+                        screen,
+                        trivia_question.question_text,
+                        trivia_question.answer_choices,
+                        trivia_question.correct_answer_index
+                    )
                     if is_correct:
                         print("Correct answer!")
                         self.game_model.answer_trivia_question_correctly()
@@ -49,7 +50,7 @@ class GameController:
                         print("Wrong answer!")
                         self.game_model.answer_trivia_question_incorrectly()
                     self.game_model.mobs[mob_index].fight = False
-                    self.game_model.despawn_mob(mob_index)
+                    self.game_model.remove_mob(mob_index)
 
             self.game_model.update_game_state()
 
@@ -70,11 +71,30 @@ class GameController:
         self.game_view.draw_score(screen, self.game_model.score)
         pygame.display.flip()
 
+    def __del__(self):
+        self.game_model.close_trivia_manager()
 
-if __name__ == "__main__":
-    window_width, window_height = 800, 600
-    cell_size = min(window_width, window_height)  # Adjust the cell size as needed
-    game_model = GameModel()
-    game_view = GameView(window_width, window_height, cell_size)
-    game_controller = GameController(game_model, game_view)
-    game_controller.run_game()
+
+class MenuController:
+    def __init__(self, screen):
+        self.model = MenuModel()
+        self.view = MenuView(screen)
+
+    def run(self):
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        pos = pygame.mouse.get_pos()
+                        selected_difficulty = self.view.get_selected_difficulty(pos)
+                        if selected_difficulty:
+                            self.model.set_difficulty_level(selected_difficulty)
+                            return self.model.difficulty_level
+
+            self.view.draw_menu()
+
+        pygame.quit()
+        return None

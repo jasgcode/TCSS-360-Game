@@ -2,7 +2,8 @@ from src.model.Maze.Maze import Maze
 from src.model.Entity.Player import Player
 from src.model.Entity.Mob import Mob
 from src.model.Entity.Entity import Position
-from src.model.database import Database
+from src.model.TriviaManager.TriviaManager import TriviaManager
+
 import random
 
 
@@ -13,10 +14,9 @@ class GameModel:
         self.maze2 = None
         self.maze3 = None
         self.maze4 = None
-        self.database = Database('/Users/johnny/TCSS-360-Game/src/model/data/trivia.db')
         self.player = None
         self.num_mobs = None
-
+        self.trivia_manager = None
         self.mobs = []
         self.mobs_positions = []
         self.mob_hunt = None
@@ -40,7 +40,6 @@ class GameModel:
             mob_position = self.mob_spawn(self.maze)
             self.mobs.append(Mob(mob_position))
             self.mobs_positions.append(mob_position)
-
         self.score = 0
         self.timer = 0
         self.trivia_question_timer = 0
@@ -54,6 +53,7 @@ class GameModel:
 
     def set_difficulty_level(self, difficulty_level):
         self.difficulty_level = difficulty_level
+        self.trivia_manager = TriviaManager(difficulty_level.lower())
         if difficulty_level == "Easy":
             self.trivia_question_interval = 20
             self.num_mobs = 5
@@ -90,12 +90,7 @@ class GameModel:
     def move_player(self, direction):
         self.player.move(direction, self.maze)
 
-    def move_enemy(self, maze, position):
-        if self.mob_hunt is True:
-            self.mob.find_path_to_player(maze, position)
-            self.mob.move_along_path(self.mob, maze)
-
-    def despawn_mob(self, mob_index):
+    def remove_mob(self, mob_index):
         self.mobs.pop(mob_index)
         self.mobs_positions.pop(mob_index)
 
@@ -114,12 +109,11 @@ class GameModel:
         self.trivia_question_timer = 0
 
     def get_trivia_question(self):
-        question = self.database.get_random_question(self.difficulty_level.lower())
-        if question:
-            question_text, answer_choices, correct_answer_index = question
-            return question_text, answer_choices, correct_answer_index
+        if self.trivia_manager:
+            return self.trivia_manager.get_trivia_question()
         else:
             return None
 
-    def __del__(self):
-        self.database.close()
+    def close_trivia_manager(self):
+        if self.trivia_manager:
+            self.trivia_manager.close_database()
