@@ -6,6 +6,7 @@ from src.model.Entity.Player import Player
 from src.model.Entity.Mob import Mob
 from src.model.Entity.Entity import Position
 from src.model.TriviaManager.TriviaManager import TriviaManager
+from src.model.sound.SoundManager import SoundManager
 
 import random
 
@@ -25,6 +26,7 @@ class GameModel:
         self.mob_hunt = None
         self.score = 0
         self.timer = 0
+        self.sound_manager = SoundManager()
         self.difficulty_level = "Easy"
         self.trivia_question_interval = 0
         self.trivia_question_timer = 0
@@ -89,6 +91,9 @@ class GameModel:
                 if self.mobs[i].fight:
                     return i
         return None
+
+    def return_button_sound(self, event):
+        self.sound_manager.play_button_sound(event)
 
     def move_player(self, direction):
         self.player.move(direction, self.maze)

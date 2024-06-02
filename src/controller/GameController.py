@@ -3,6 +3,7 @@ import os
 import pygame
 from src.model.GameModel import GameModel
 from src.model.MenuModel import MenuModel
+from src.model.sound.SoundManager import SoundManager
 from src.view.gameView import GameView
 from src.view.menuView import MenuView
 
@@ -90,6 +91,7 @@ class MenuController:
     def __init__(self, screen):
         self.model = MenuModel()
         self.view = MenuView(screen, self.model)
+        self.sound_manager = SoundManager()
 
     def run(self):
         saves = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
@@ -109,19 +111,25 @@ class MenuController:
                         selected_option = self.view.get_selected_option(pos, show_difficulty_options, show_save_files,
                                                                         scroll_offset)
                         if selected_option == 'new_game':
+                            self.sound_manager.play_button_sound()
                             show_difficulty_options = True
                             show_save_files = False
+
                         elif selected_option == 'load_game':
+                            self.sound_manager.play_button_sound()
                             show_difficulty_options = False
                             show_save_files = True
                         elif selected_option == 'back':
+                            self.sound_manager.play_button_sound()
                             show_difficulty_options = False
                             show_save_files = False
                             scroll_offset = 0
                         elif selected_option in ["Easy", "Medium", "Hard"]:
+                            self.sound_manager.play_button_sound()
                             self.model.set_difficulty_level(selected_option)
                             return 'new_game', self.model.difficulty_level
                         elif selected_option in self.model.save_files:
+                            self.sound_manager.play_button_sound()
                             return 'load_game', selected_option
                         elif selected_option == 'scroll_up':
                             scroll_offset = max(0, scroll_offset - 1)
