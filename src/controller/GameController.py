@@ -1,13 +1,15 @@
 import pygame
 from src.model.GameModel import GameModel
 from src.model.MenuModel import MenuModel
-from src.view.gameView import GameView, MenuView
+from src.view.gameView import GameView
+from src.view.menuView import MenuView
 
 
 class GameController:
     def __init__(self, game_model, game_view):
         self.game_model = game_model
         self.game_view = game_view
+        self.save_file_name = None
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
@@ -52,6 +54,13 @@ class GameController:
                     self.game_model.mobs[mob_index].fight = False
                     self.game_model.remove_mob(mob_index)
 
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_s]:  # Press 'S' key to save the game state
+                if self.save_file_name is None:
+                    self.save_file_name = self.game_model.generate_save_file_name()
+                self.game_model.save_game_state(self.save_file_name)
+                print(f"Game state saved to {self.save_file_name}")
+
             self.game_model.update_game_state()
 
             if self.game_model.is_game_over():
@@ -78,9 +87,14 @@ class GameController:
 class MenuController:
     def __init__(self, screen):
         self.model = MenuModel()
-        self.view = MenuView(screen)
+        self.view = MenuView(screen, self.model)
 
     def run(self):
+        self.model.load_save_files('saves')
+
+        show_difficulty_options = False
+        show_save_files = False
+        scroll_offset = 0
         running = True
         while running:
             for event in pygame.event.get():
@@ -89,12 +103,29 @@ class MenuController:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         pos = pygame.mouse.get_pos()
-                        selected_difficulty = self.view.get_selected_difficulty(pos)
-                        if selected_difficulty:
-                            self.model.set_difficulty_level(selected_difficulty)
-                            return self.model.difficulty_level
+                        selected_option = self.view.get_selected_option(pos, show_difficulty_options, show_save_files,
+                                                                        scroll_offset)
+                        if selected_option == 'new_game':
+                            show_difficulty_options = True
+                            show_save_files = False
+                        elif selected_option == 'load_game':
+                            show_difficulty_options = False
+                            show_save_files = True
+                        elif selected_option == 'back':
+                            show_difficulty_options = False
+                            show_save_files = False
+                            scroll_offset = 0
+                        elif selected_option in ["Easy", "Medium", "Hard"]:
+                            self.model.set_difficulty_level(selected_option)
+                            return 'new_game', self.model.difficulty_level
+                        elif selected_option in self.model.save_files:
+                            return 'load_game', selected_option
+                        elif selected_option == 'scroll_up':
+                            scroll_offset = max(0, scroll_offset - 1)
+                        elif selected_option == 'scroll_down':
+                            scroll_offset = min(len(self.model.save_files) - 5, scroll_offset + 1)
 
-            self.view.draw_menu()
+            self.view.draw_menu(show_difficulty_options, show_save_files, scroll_offset)
 
         pygame.quit()
-        return None
+        return None, None
