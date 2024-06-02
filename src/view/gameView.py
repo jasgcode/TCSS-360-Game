@@ -23,6 +23,7 @@ class GameView:
                                      (x * self.cell_size, y * self.cell_size,
                                       self.cell_size, self.cell_size))
 
+
     def draw_player(self, screen, player):
         x, y = player.position.x, player.position.y
         pygame.draw.circle(screen, self.color_player,
@@ -37,7 +38,9 @@ class GameView:
 
     def draw_score(self, screen, score):
         text = self.font.render(f"Score: {score}", True, self.color_text)
-        screen.blit(text, (10, 10))
+        text_rect = text.get_rect()
+        text_rect.topright = (self.window_width - 10, 10)  # Position at the top right with a 10-pixel margin
+        screen.blit(text, text_rect)
 
     def show_question_popup(self, screen, question, choices, correct_choice):
         popup_width = 400
@@ -99,28 +102,4 @@ class GameView:
         return None
 
 
-class MenuView:
-    def __init__(self, screen):
-        self.screen = screen
-        self.font = pygame.font.Font(None, 36)
 
-    def draw_menu(self):
-        self.screen.fill((255, 255, 255))
-        title_text = self.font.render("Main Menu", True, (0, 0, 0))
-        self.screen.blit(title_text, (self.screen.get_width() // 2 - title_text.get_width() // 2, 100))
-
-        difficulty_options = ["Easy", "Medium", "Hard"]
-        for i, option in enumerate(difficulty_options):
-            text = self.font.render(option, True, (0, 0, 0))
-            self.screen.blit(text, (self.screen.get_width() // 2 - text.get_width() // 2, 200 + i * 50))
-
-        pygame.display.flip()
-
-    def get_selected_difficulty(self, pos):
-        difficulty_options = ["Easy", "Medium", "Hard"]
-        for i, option in enumerate(difficulty_options):
-            text = self.font.render(option, True, (0, 0, 0))
-            rect = text.get_rect(center=(self.screen.get_width() // 2, 200 + i * 50))
-            if rect.collidepoint(pos):
-                return option
-        return None

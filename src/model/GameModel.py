@@ -1,8 +1,12 @@
+import os
+import pickle
+
 from src.model.Maze.Maze import Maze
 from src.model.Entity.Player import Player
 from src.model.Entity.Mob import Mob
 from src.model.Entity.Entity import Position
 from src.model.TriviaManager.TriviaManager import TriviaManager
+from src.model.sound.SoundManager import SoundManager
 
 import random
 
@@ -22,6 +26,7 @@ class GameModel:
         self.mob_hunt = None
         self.score = 0
         self.timer = 0
+        self.sound_manager = SoundManager()
         self.difficulty_level = "Easy"
         self.trivia_question_interval = 0
         self.trivia_question_timer = 0
@@ -87,6 +92,9 @@ class GameModel:
                     return i
         return None
 
+    def return_button_sound(self, event):
+        self.sound_manager.play_button_sound(event)
+
     def move_player(self, direction):
         self.player.move(direction, self.maze)
 
@@ -117,3 +125,43 @@ class GameModel:
     def close_trivia_manager(self):
         if self.trivia_manager:
             self.trivia_manager.close_database()
+
+    def generate_save_file_name(self):
+        save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
+        if not os.path.exists(save_directory):
+            os.makedirs(save_directory)
+
+        # Generate the file name based on the number of existing save files
+        save_files = [file for file in os.listdir(save_directory) if file.startswith('save')]
+        save_number = len(save_files) + 1
+        file_name = f'save{save_number}.pkl'
+
+        return file_name
+
+    def save_game_state(self, file_name):
+        save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
+        file_path = os.path.join(save_directory, file_name)
+        game_state = {
+            'maze': self.maze,
+            'player': self.player,
+            'mobs': self.mobs,
+            'score': self.score,
+            'difficulty_level': self.difficulty_level,
+            'num_mobs': self.num_mobs,
+            # Add other attributes you want to save
+        }
+        with open(file_path, 'wb') as file:
+            pickle.dump(game_state, file)
+
+    def load_game_state(self, file_name):
+        save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
+        file_path = os.path.join(save_directory, file_name)
+        with open(file_path, 'rb') as file:
+            game_state = pickle.load(file)
+            self.maze = game_state['maze']
+            self.player = game_state['player']
+            self.mobs = game_state['mobs']
+            self.num_mobs = game_state['num_mobs']
+            self.score = game_state['score']
+            self.difficulty_level = game_state['difficulty_level']
+            # Assign other loaded attributes to the game model
