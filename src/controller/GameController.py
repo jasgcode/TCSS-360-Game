@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from src.model.GameModel import GameModel
 from src.model.MenuModel import MenuModel
@@ -90,7 +92,8 @@ class MenuController:
         self.view = MenuView(screen, self.model)
 
     def run(self):
-        self.model.load_save_files('saves')
+        saves = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
+        self.model.load_save_files(saves)
 
         show_difficulty_options = False
         show_save_files = False

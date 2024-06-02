@@ -13,7 +13,7 @@ def main():
     pygame.display.set_caption("Maze Game")
 
     menu_controller = MenuController(screen)
-    saves_directory = os.path.join(os.path.dirname(__file__), '..', 'saves')
+    saves_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
     menu_controller.model.load_save_files(saves_directory)
 
     while True:

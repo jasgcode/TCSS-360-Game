@@ -142,6 +142,7 @@ class GameModel:
             'mobs': self.mobs,
             'score': self.score,
             'difficulty_level': self.difficulty_level,
+            'num_mobs': self.num_mobs,
             # Add other attributes you want to save
         }
         with open(file_path, 'wb') as file:
@@ -152,9 +153,10 @@ class GameModel:
         file_path = os.path.join(save_directory, file_name)
         with open(file_path, 'rb') as file:
             game_state = pickle.load(file)
-        self.maze = game_state['maze']
-        self.player = game_state['player']
-        self.mobs = game_state['mobs']
-        self.score = game_state['score']
-        self.difficulty_level = game_state['difficulty_level']
-        # Assign other loaded attributes to the game model
+            self.maze = game_state['maze']
+            self.player = game_state['player']
+            self.mobs = game_state['mobs']
+            self.num_mobs = game_state['num_mobs']
+            self.score = game_state['score']
+            self.difficulty_level = game_state['difficulty_level']
+            # Assign other loaded attributes to the game model
