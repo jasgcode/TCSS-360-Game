@@ -1,11 +1,14 @@
 import os
 
 import pygame
+
+from src.model.GameMenuModel import GameMenuModel
 from src.model.GameModel import GameModel
 from src.model.MenuModel import MenuModel
 from src.model.sound.SoundManager import SoundManager
 from src.view.gameView import GameView
 from src.view.menuView import MenuView
+from src.view.GameMenuView import InGameMenuView
 
 
 class GameController:
@@ -13,6 +16,10 @@ class GameController:
         self.game_model = game_model
         self.game_view = game_view
         self.save_file_name = None
+        self.menu_model = GameMenuModel(game_model)
+        self.menu_view = None  # Initialize menu_view to None
+        self.menu_controller = None
+        self.menu_open = False
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
@@ -21,13 +28,22 @@ class GameController:
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
                                         self.game_view.window_height // self.game_view.cell_size,
                                         self.game_view.cell_size)
-
+        self.menu_view = InGameMenuView(screen, self.game_view)  # Create the menu_view with the screen
+        self.menu_controller = InGameMenuController(self, self.menu_model, self.menu_view)  # Create the menu_controller
         running = True
+        if self.game_model.current_filename is not None:
+            self.game_model.load_game_state(self.save_file_name)
+            self.game_model.update_game_state()
         while running:
             user_input = self.game_view.get_user_input()
-
             if user_input == "quit":
                 running = False
+            elif user_input == "show_in_game_menu" and not self.menu_open:  # Add this condition
+                self.menu_open = True  # Set menu_open to True
+                menu_result = self.menu_controller.show_menu()
+                self.menu_open = False  # Set menu_open to False after the menu is closed
+                if menu_result == "MainMenu":
+                    return "MainMenu"
             elif user_input == "up":
                 self.game_model.move_player(GameModel.get_position(0, -1))
             elif user_input == "down":
@@ -69,17 +85,16 @@ class GameController:
             if self.game_model.is_game_over():
                 running = False
 
-            self.render_game(screen, self.game_model.difficulty_level)
+            self.render_game(screen)
 
         pygame.quit()
 
-    def render_game(self, screen, difficulty):
+    def render_game(self, screen):
         screen.fill(self.game_view.color_bg)
         self.game_view.draw_maze(screen, self.game_model.maze)
         self.game_view.draw_player(screen, self.game_model.player)
         for mob in self.game_model.mobs:
-            if mob.fight:
-                self.game_view.draw_enemy(screen, mob)
+            self.game_view.draw_enemy(screen, mob)
         self.game_view.draw_score(screen, self.game_model.score)
         pygame.display.flip()
 
@@ -96,7 +111,6 @@ class MenuController:
     def run(self):
         saves = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
         self.model.load_save_files(saves)
-
         show_difficulty_options = False
         show_save_files = False
         scroll_offset = 0
@@ -140,3 +154,69 @@ class MenuController:
 
         pygame.quit()
         return None, None
+
+
+class InGameMenuController:
+    def __init__(self, game_controller, model, view):
+        self.game_controller = game_controller
+        self.model = model
+        self.view = view
+        self.sound_manager = SoundManager()
+
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            self.show_menu()
+
+    def show_menu(self):
+        while True:
+            if self.model.show_help_flag:
+                back_rect = self.view.draw_help_popup()
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if back_rect.collidepoint(event.pos):
+                            self.sound_manager.play_button_sound()
+                            self.model.hide_help()
+            else:
+                self.view.draw_menu(self.model.menu_options)
+                for event in pygame.event.get():
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.sound_manager.play_button_sound()
+                        clicked_option = self.view.get_clicked_option(event.pos)
+                        self.model.set_selected_option(clicked_option)
+                        if clicked_option == "Save":
+                            self.sound_manager.play_button_sound()
+                            self.model.save_game()
+                        elif clicked_option == "Load":
+                            self.sound_manager.play_button_sound()
+                            self.show_load_popup()
+                        elif clicked_option == "Help":
+                            self.sound_manager.play_button_sound()
+                            self.model.show_help()
+                        elif clicked_option == "Back":
+                            self.sound_manager.play_button_sound()
+                            return
+                        elif clicked_option == "Main Menu":
+                            self.model.return_to_main_menu()
+                            self.sound_manager.play_button_sound()
+                            return "MainMenu"
+                        elif clicked_option == "Exit Game":
+                            pygame.quit()
+            if self.model.return_to_main_menu_flag:
+                self.model.return_to_main_menu_flag = False
+                return "MainMenu"
+
+    def show_load_popup(self):
+        while True:
+            self.view.draw_load_popup(self.model.game_model.get_save_files())
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    clicked_save_file = self.view.get_clicked_save_file(event.pos,
+                                                                        self.model.game_model.get_save_files())
+                    self.sound_manager.play_button_sound()
+                    if clicked_save_file == "Back":
+                        self.sound_manager.play_button_sound()
+                        return
+                    elif clicked_save_file:
+                        self.model.load_game(clicked_save_file)
+                        self.sound_manager.play_button_sound()
+                        return

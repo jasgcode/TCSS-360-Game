@@ -40,13 +40,8 @@ class MenuView:
                 self.screen.blit(text, text_rect)
 
         if show_save_files:
-            print("Drawing save files...")  # Debugging line
-            # Check if save_files list is empty
-            if not self.model.save_files:
-                print("No save files found.")  # Debugging line
             # Draw the available save files as clickable rectangles
             for i, save_file in enumerate(self.model.save_files[scroll_offset:scroll_offset + 5]):
-                print(f"Drawing save file: {save_file}")  # Debugging line
                 text = self.font_options.render(save_file, True, (0, 0, 0))
                 text_rect = text.get_rect(center=(self.screen.get_width() // 2, 350 + i * 50))
                 pygame.draw.rect(self.screen, (200, 200, 200), text_rect, 2)
