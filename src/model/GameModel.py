@@ -109,6 +109,8 @@ class GameModel:
     def return_button_sound(self, event):
         self.sound_manager.play_button_sound(event)
 
+    def get_cell_size(self):
+        return self.cell_size
     def move_player(self, direction):
         self.player.move(direction, self.maze)
 
@@ -180,6 +182,7 @@ class GameModel:
             'difficulty_level': self.difficulty_level,
             'num_mobs': self.num_mobs,
             'mob_data': mob_data,  # Include mob_data in the game state
+            'cell_size': self.cell_size,
         }
 
         with open(file_path, 'wb') as file:
@@ -204,6 +207,7 @@ class GameModel:
             self.num_mobs = game_state['num_mobs']
             self.score = game_state['score']
             self.difficulty_level = game_state['difficulty_level']
+            self.cell_size = game_state['cell_size']
 
             # Load additional attributes for each mob
             for i, mob_data in enumerate(game_state.get('mob_data', [])):
