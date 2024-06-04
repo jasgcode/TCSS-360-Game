@@ -91,7 +91,9 @@ class GameView:
             if event.type == pygame.QUIT:
                 return "quit"
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_ESCAPE:
+                    return "show_in_game_menu"
+                elif event.key == pygame.K_UP:
                     return "up"
                 elif event.key == pygame.K_DOWN:
                     return "down"
