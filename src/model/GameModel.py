@@ -73,12 +73,15 @@ class GameModel:
         if difficulty_level == "Easy":
             self.trivia_question_interval = 20
             self.num_mobs = 5
+            self.cell_size = 28
         elif difficulty_level == "Medium":
             self.trivia_question_interval = 15
             self.num_mobs = 10
+            self.cell_size = 25
         else:  # "Hard"
             self.trivia_question_interval = 10
             self.num_mobs = 25
+            self.cell_size = 19
 
     @staticmethod
     def get_position(x, y):

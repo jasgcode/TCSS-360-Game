@@ -22,7 +22,8 @@ def main():
         if action == 'new_game':
             difficulty_level = data
             game_model = GameModel()
-            game_view = GameView(1280, 720, 22)
+            game_model.set_difficulty_level(difficulty_level)
+            game_view = GameView(1280, 720, game_model.cell_size)
             game_controller = GameController(game_model, game_view)
             game_controller.game_model.set_difficulty_level(difficulty_level)
             save_file_name = game_controller.game_model.generate_save_file_name()
@@ -31,7 +32,7 @@ def main():
         elif action == 'load_game':
             save_file_name = data
             game_model = GameModel()
-            game_view = GameView(1280, 720, 22)
+            game_view = GameView(1280, 720, game_model.cell_size)
             game_controller = GameController(game_model, game_view)
             save_file_path = os.path.join(saves_directory, save_file_name)
             game_controller.game_model.load_game_state(save_file_path)
