@@ -45,8 +45,10 @@ class InGameMenuView:
         pygame.draw.rect(self.screen, (0, 0, 0), (popup_x, popup_y, popup_width, popup_height), 2)
 
         help_text = [
-            "Movement: Arrow keys",
-            "Save: Press 'S'",
+            "Movement: Arrow keys and WASD Keys",
+            "Save: Press 'CTRL + S'",
+            "Whenever you go on a red dot it will cause an encounter, where it will show you a question and multiple choices",
+            "Click on the text to choose your answer",
             "Goal: Reach the exit"
         ]
         for i, line in enumerate(help_text):
