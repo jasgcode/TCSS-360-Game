@@ -23,6 +23,8 @@ class GameModel:
         self.trivia_manager = None
         self.mobs = []
         self.mobs_positions = []
+        self.visited_mazes = []
+        self.mazes_to_visit = []
         self.mob_hunt = None
         self.score = 0
         self.timer = 0
@@ -38,6 +40,8 @@ class GameModel:
         self.maze2 = self.generate_maze(width, height)
         self.maze3 = self.generate_maze(width, height)
         self.maze4 = self.generate_maze(width, height)
+        self.maze1.maze1start = True
+        self.mazes_to_visit = [self.maze4, self.maze3, self.maze2]
         self.maze = self.maze1
         self.player = Player(Position(2, 1))  # Starting position of the player
         self.mobs = []
@@ -91,6 +95,30 @@ class GameModel:
         self.timer += 1
         self.trivia_question_timer += 1
 
+    def switch_to_next_maze(self):
+        if self.mazes_to_visit:
+            self.visited_mazes.append(self.maze)
+            self.maze = self.mazes_to_visit.pop()
+            self.player = Player(Position(2, 1))
+
+    def switch_to_previous_maze(self):
+        if self.visited_mazes:
+            self.mazes_to_visit.append(self.maze)
+            self.maze = self.visited_mazes.pop()
+            end_y, end_x = self.maze.end_pos
+            self.player.position = Position(end_x,
+                                            end_y)  # Set the player's position to the end_pos of the previous maze
+
+    def check_player_position_cell_value(self):
+        cell_value = self.maze.maze[self.player.position.y][self.player.position.x]
+        if abs(cell_value - 0.75) < 1e-6:
+            print("0.75")
+            return 0.75
+        elif abs(cell_value - 0.6) < 1e-6:
+            print("0.6")
+            return 0.6
+        return None
+
     def mob_spawn(self, maze):
         while True:
             x = random.randrange(1, maze.width - 1)
@@ -111,6 +139,7 @@ class GameModel:
 
     def get_cell_size(self):
         return self.cell_size
+
     def move_player(self, direction):
         self.player.move(direction, self.maze)
 
@@ -119,7 +148,12 @@ class GameModel:
         self.mobs_positions.pop(mob_index)
 
     def is_game_over(self):
-        return self.player.position == Position(self.maze.height - 2, self.maze.width - 3)
+        if self.player.position == Position(self.maze.height - 2, self.maze.width - 3):
+            if not self.mazes_to_visit:
+                return True
+            else:
+                self.switch_to_next_maze()
+        return False
 
     def should_ask_trivia_question(self):
         return self.trivia_question_timer >= self.trivia_question_interval
@@ -175,6 +209,8 @@ class GameModel:
             'maze3': self.maze3,
             'maze4': self.maze4,
             'maze': self.maze,
+            'visited_mazes': self.visited_mazes,
+            'mazes_to_visit': self.mazes_to_visit,
             'player': self.player,
             'mobs': self.mobs,
             'mobs_positions': self.mobs_positions,
@@ -201,6 +237,8 @@ class GameModel:
             self.maze3 = game_state['maze3']
             self.maze4 = game_state['maze4']
             self.maze = game_state['maze']
+            self.visited_mazes = game_state['visited_mazes']
+            self.mazes_to_visit = game_state['mazes_to_visit']
             self.player = game_state['player']
             self.mobs_positions = game_state['mobs_positions']
             self.mobs = [Mob(pos) for pos in self.mobs_positions]
