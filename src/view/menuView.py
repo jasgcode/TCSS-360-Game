@@ -7,27 +7,29 @@ class MenuView:
         self.model = model
         self.font_title = pygame.font.Font(None, 72)
         self.font_options = pygame.font.Font(None, 36)
+        self.background_image = pygame.image.load('../images/MainMenu.JPG')
+        self.background_image = pygame.transform.scale(self.background_image, (screen.get_width(), screen.get_height()))
 
     def draw_menu(self, show_difficulty_options=False, show_save_files=False, scroll_offset=0):
-        self.screen.fill((255, 255, 255))
+        self.screen.blit(self.background_image, (0, 0))
 
         # Draw the title
-        title_text = self.font_title.render("Alcoholism", True, (0, 0, 0))
+        title_text = self.font_title.render("Escape the 7 Seas", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, 100))
         self.screen.blit(title_text, title_rect)
 
         if not show_difficulty_options and not show_save_files:
             # Draw the "New Game" and "Load Game" options
-            new_game_text = self.font_options.render("New Game", True, (0, 0, 0))
+            new_game_text = self.font_options.render("New Game", True, (255, 255, 255))
             new_game_rect = new_game_text.get_rect(center=(self.screen.get_width() // 2, 200))
             self.screen.blit(new_game_text, new_game_rect)
 
-            load_game_text = self.font_options.render("Load Game", True, (0, 0, 0))
+            load_game_text = self.font_options.render("Load Game", True, (255, 255, 255))
             load_game_rect = load_game_text.get_rect(center=(self.screen.get_width() // 2, 250))
             self.screen.blit(load_game_text, load_game_rect)
         else:
             # Draw the "Back" button
-            back_text = self.font_options.render("Back", True, (0, 0, 0))
+            back_text = self.font_options.render("Back", True, (255, 255, 255))
             back_rect = back_text.get_rect(topleft=(50, 50))
             self.screen.blit(back_text, back_rect)
 
@@ -35,7 +37,7 @@ class MenuView:
             # Draw the difficulty options
             difficulty_options = ["Easy", "Medium", "Hard"]
             for i, option in enumerate(difficulty_options):
-                text = self.font_options.render(option, True, (0, 0, 0))
+                text = self.font_options.render(option, True, (255, 255, 255))
                 text_rect = text.get_rect(center=(self.screen.get_width() // 2, 350 + i * 50))
                 self.screen.blit(text, text_rect)
 
@@ -105,5 +107,4 @@ class MenuView:
                     return 'scroll_up'
                 elif down_arrow_rect.collidepoint(pos):
                     return 'scroll_down'
-
         return None

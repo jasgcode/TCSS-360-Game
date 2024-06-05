@@ -12,11 +12,10 @@ def main():
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption("Maze Game")
 
-    menu_controller = MenuController(screen)
-    saves_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
-    menu_controller.model.load_save_files(saves_directory)
-
     while True:
+        menu_controller = MenuController(screen)
+        saves_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
+        menu_controller.model.load_save_files(saves_directory)
         action, data = menu_controller.run()
 
         if action == 'new_game':
@@ -28,7 +27,9 @@ def main():
             game_controller.game_model.set_difficulty_level(difficulty_level)
             save_file_name = game_controller.game_model.generate_save_file_name()
             game_controller.save_file_name = save_file_name
-            game_controller.run_game()
+            result = game_controller.run_game()
+            if result == "MainMenu":
+                continue
         elif action == 'load_game':
             save_file_name = data
             game_model = GameModel()
@@ -36,10 +37,11 @@ def main():
             game_model.load_game_state(save_file_path)
             game_view = GameView(1280, 720, game_model.get_cell_size())
             game_controller = GameController(game_model, game_view)
-            save_file_path = os.path.join(saves_directory, save_file_name)
             game_controller.game_model.load_game_state(save_file_path)
             game_controller.save_file_name = save_file_name
-            game_controller.run_game()
+            result = game_controller.run_game()
+            if result == "MainMenu":
+                continue
         else:
             break
 

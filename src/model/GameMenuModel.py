@@ -2,7 +2,7 @@
 class GameMenuModel:
     def __init__(self, game_model):
         self.game_model = game_model
-        self.menu_options = ["Save", "Load", "Help", "Back", "Main Menu", "Exit Game"]
+        self.menu_options = ["Save", "Help", "Back", "Main Menu", "Exit Game"]
         self.show = False
         self.selected_option = None
         self.show_help_flag = False
@@ -19,6 +19,7 @@ class GameMenuModel:
 
     def load_game(self, file_name):
         self.game_model.load_game_state(file_name)
+
 
     def return_to_main_menu(self):
         self.return_to_main_menu_flag = True
