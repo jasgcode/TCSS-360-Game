@@ -9,6 +9,8 @@ sys.setrecursionlimit(8000)
 class Maze:
 
     def __init__(self, width, height):
+        self.end_pos = None
+        self.start_pos = None
         if width % 2 == 0:
             width += 1
         if height % 2 == 0:
@@ -18,12 +20,13 @@ class Maze:
         self.height = height
         self.Cells = Cells()
         self.maze = None
+        self.maze1start = False
 
     def create(self):
         maze = np.ones((self.height, self.width), dtype=float)
         # mid_height = self.height // 2
         # mid_width = self.width // 2
-        randomVar = random.randrange(2, 25, 2)
+        randomVar = random.randrange(2, 18, 2)
 
         for i in range(self.height):
             for j in range(self.width):
@@ -71,17 +74,20 @@ class Maze:
                 if maze[i, j] == 0.5:
                     maze[i, j] = 1
 
-        maze[1, 2] = 1
-        maze[self.height - 2, self.width - 3] = 1
+        self.start_pos = (1, 2)  # Store the starting position as a tuple
+        self.end_pos = (self.height - 3, self.width - 4)  # Store the ending position as a tuple
+
+        maze[self.start_pos[0], self.start_pos[1]] = 0.6
+        maze[self.end_pos[0], self.end_pos[1]] = 0.75
         self.maze = maze
 
-    def generate_sub_maze(self, sub_maze):
-        if sub_maze.shape[1] <= 3 or sub_maze.shape[0] <= 3:
-            return
-
-        sx = random.randrange(2, sub_maze.shape[1] - 1, 2)
-        sy = random.randrange(2, sub_maze.shape[0] - 1, 2)
-        self.Cells.generator(sx, sy, sub_maze)
+    # def generate_sub_maze(self, sub_maze):
+    #     if sub_maze.shape[1] <= 3 or sub_maze.shape[0] <= 3:
+    #         return
+    #
+    #     sx = random.randrange(2, sub_maze.shape[1] - 1, 2)
+    #     sy = random.randrange(2, sub_maze.shape[0] - 1, 2)
+    #     self.Cells.generator(sx, sy, sub_maze)
 
     def is_walkable(self, position):
         return not (self.width > position.x > 0 == self.maze[position.y, position.x] and

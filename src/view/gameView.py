@@ -14,12 +14,22 @@ class GameView:
         self.color_player = (0, 0, 255)
         self.color_mob = (255, 0, 0)
         self.color_text = (0, 255, 0)
+        self.color_start_portal = (255, 0, 255)
+        self.color_portal = (0,255, 255)
 
     def draw_maze(self, screen, maze):
         for y in range(maze.height):
             for x in range(maze.width):
                 if maze.maze[y, x] == 0:  # Check if the cell is a wall
                     pygame.draw.rect(screen, self.color_wall,
+                                     (x * self.cell_size, y * self.cell_size,
+                                      self.cell_size, self.cell_size))
+                if maze.maze[y, x] == 0.75:
+                    pygame.draw.rect(screen, self.color_portal,
+                                     (x * self.cell_size, y * self.cell_size,
+                                      self.cell_size, self.cell_size))
+                if maze.maze[y, x] == 0.6:
+                    pygame.draw.rect(screen, self.color_start_portal,
                                      (x * self.cell_size, y * self.cell_size,
                                       self.cell_size, self.cell_size))
 
@@ -43,8 +53,8 @@ class GameView:
         screen.blit(text, text_rect)
 
     def show_question_popup(self, screen, question, choices, correct_choice):
-        popup_width = 400
-        popup_height = 300
+        popup_width = 900
+        popup_height = 600
         popup_x = (self.window_width - popup_width) // 2
         popup_y = (self.window_height - popup_height) // 2
 
@@ -101,6 +111,8 @@ class GameView:
                     return "left"
                 elif event.key == pygame.K_RIGHT:
                     return "right"
+                elif event.key == pygame.K_x:
+                    return "x"
         return None
 
 

@@ -53,6 +53,26 @@ class GameController:
             elif user_input == "right":
                 self.game_model.move_player(GameModel.get_position(1, 0))
 
+            cell_value = self.game_model.check_player_position_cell_value()
+            print(f"Cell value: {cell_value}")
+            if cell_value == 0.75:
+
+                print("Player stepped on a cell with value 0.75!")
+
+                if user_input == "x":
+                    print("Switching to next maze")
+
+                    self.game_model.switch_to_next_maze()
+
+            elif cell_value == 0.6:
+
+                print("Player stepped on a cell with value 0.6!")
+
+                if user_input == "x":
+                    print("Switching to previous maze")
+
+                    self.game_model.switch_to_previous_maze()
+
             mob_index = self.game_model.check_mob_encounter()
             if mob_index is not None:
                 print("Mob encounter triggered!")
