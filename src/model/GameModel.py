@@ -22,7 +22,15 @@ class GameModel:
         self.num_mobs = None
         self.trivia_manager = None
         self.mobs = []
-        self.mobs_positions = []
+        self.mobs1 = []
+        self.mobs2 = []
+        self.mobs3 = []
+        self.mobs4 = []
+        self.mobs_positions =[]
+        self.mobs_positions1 = []
+        self.mobs_positions2 = []
+        self.mobs_positions3 = []
+        self.mobs_positions4 = []
         self.visited_mazes = []
         self.mazes_to_visit = []
         self.mob_hunt = None
@@ -47,15 +55,23 @@ class GameModel:
         self.mobs = []
 
         if self.current_filename is not None:
-            for pos in self.mobs_positions:
-                self.mobs.append(Mob(pos))
+            self.mobs1 = [Mob(pos) for pos in self.mobs_positions1]
+            self.mobs2 = [Mob(pos) for pos in self.mobs_positions2]
+            self.mobs3 = [Mob(pos) for pos in self.mobs_positions3]
+            self.mobs4 = [Mob(pos) for pos in self.mobs_positions4]
         else:
-            # If starting a new game, generate new mob positions
-            self.mobs_positions = []
-            for _ in range(self.num_mobs):
-                mob_position = self.mob_spawn(self.maze)
-                self.mobs.append(Mob(mob_position))
-                self.mobs_positions.append(mob_position)
+            # If starting a new game, generate new mob positions for each maze
+            self.mobs_positions1 = [self.mob_spawn(self.maze1) for _ in range(self.num_mobs)]
+            self.mobs_positions2 = [self.mob_spawn(self.maze2) for _ in range(self.num_mobs)]
+            self.mobs_positions3 = [self.mob_spawn(self.maze3) for _ in range(self.num_mobs)]
+            self.mobs_positions4 = [self.mob_spawn(self.maze4) for _ in range(self.num_mobs)]
+            self.mobs1 = [Mob(pos) for pos in self.mobs_positions1]
+            self.mobs2 = [Mob(pos) for pos in self.mobs_positions2]
+            self.mobs3 = [Mob(pos) for pos in self.mobs_positions3]
+            self.mobs4 = [Mob(pos) for pos in self.mobs_positions4]
+
+        self.mobs = self.mobs1  # Set the initial mobs to mobs1
+        self.mobs_positions = self.mobs_positions1
 
         print("Initialized mobs:", self.mobs)
         print("Initialized mobs_positions:", self.mobs_positions)
@@ -101,6 +117,16 @@ class GameModel:
             self.maze = self.mazes_to_visit.pop()
             self.player = Player(Position(2, 1))
 
+        if self.maze == self.maze4:
+            self.mobs = self.mobs4
+            self.mobs_positions = self.mobs_positions4
+        elif self.maze == self.maze3:
+            self.mobs = self.mobs3
+            self.mobs_positions = self.mobs_positions3
+        elif self.maze == self.maze2:
+            self.mobs = self.mobs2
+            self.mobs_positions = self.mobs_positions2
+
     def switch_to_previous_maze(self):
         if self.visited_mazes:
             self.mazes_to_visit.append(self.maze)
@@ -108,6 +134,15 @@ class GameModel:
             end_y, end_x = self.maze.end_pos
             self.player.position = Position(end_x,
                                             end_y)  # Set the player's position to the end_pos of the previous maze
+        if self.maze == self.maze1:
+            self.mobs = self.mobs1
+            self.mobs_positions = self.mobs_positions1
+        elif self.maze == self.maze2:
+            self.mobs = self.mobs2
+            self.mobs_positions = self.mobs_positions2
+        elif self.maze == self.maze3:
+            self.mobs = self.mobs3
+            self.mobs_positions = self.mobs_positions3
 
     def check_player_position_cell_value(self):
         cell_value = self.maze.maze[self.player.position.y][self.player.position.x]
@@ -209,6 +244,14 @@ class GameModel:
             'maze3': self.maze3,
             'maze4': self.maze4,
             'maze': self.maze,
+            'mobs1': self.mobs1,
+            'mobs2': self.mobs2,
+            'mobs3': self.mobs3,
+            'mobs4': self.mobs4,
+            'mobs_positions1': self.mobs_positions1,
+            'mobs_positions2': self.mobs_positions2,
+            'mobs_positions3': self.mobs_positions3,
+            'mobs_positions4': self.mobs_positions4,
             'visited_mazes': self.visited_mazes,
             'mazes_to_visit': self.mazes_to_visit,
             'player': self.player,
@@ -237,6 +280,14 @@ class GameModel:
             self.maze3 = game_state['maze3']
             self.maze4 = game_state['maze4']
             self.maze = game_state['maze']
+            self.mobs1 = game_state['mobs1']
+            self.mobs2 = game_state['mobs2']
+            self.mobs3 = game_state['mobs3']
+            self.mobs4 = game_state['mobs4']
+            self.mobs_positions1 = game_state['mobs_positions1']
+            self.mobs_positions2 = game_state['mobs_positions2']
+            self.mobs_positions3 = game_state['mobs_positions3']
+            self.mobs_positions4 = game_state['mobs_positions4']
             self.visited_mazes = game_state['visited_mazes']
             self.mazes_to_visit = game_state['mazes_to_visit']
             self.player = game_state['player']
