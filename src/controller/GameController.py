@@ -7,6 +7,8 @@ from src.model.GameModel import GameModel
 from src.model.MenuModel import MenuModel
 from src.model.sound.SoundManager import SoundManager
 from src.view.gameView import GameView
+from src.view.MazeEndView import MazeEndView
+
 from src.view.menuView import MenuView
 from src.view.GameMenuView import InGameMenuView
 
@@ -20,9 +22,11 @@ class GameController:
         self.menu_view = None  # Initialize menu_view to None
         self.menu_controller = None
         self.menu_open = False
+        self.cheat_counter = 0  # Counter for the cheat code
+        self.completed_mazes = 0  # Keep track of completed mazes
+        self.maze_end_view = None  # Initialize MazeEndView to None
 
     def run_game(self):
-        pygame.init()  # Initialize Pygame
         screen = pygame.display.set_mode(
             (self.game_view.window_width, self.game_view.window_height))  # Create a window surface
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
@@ -33,7 +37,6 @@ class GameController:
         running = True
         if self.game_model.current_filename is not None:
             self.game_model.load_game_state(self.save_file_name)
-            self.game_model.update_game_state()
         while running:
             user_input = self.game_view.get_user_input()
             if user_input == "quit":
@@ -52,25 +55,37 @@ class GameController:
                 self.game_model.move_player(GameModel.get_position(-1, 0))
             elif user_input == "right":
                 self.game_model.move_player(GameModel.get_position(1, 0))
+            elif user_input == "c":
+                self.cheat_counter += 1
+                print(f"'c' pressed. Cheat counter: {self.cheat_counter}")  # Debug statement
+                if self.cheat_counter == 1:  # Adjusted for single press
+                    self.teleport_to_end_portal()
+                    self.cheat_counter = 0
+            else:
+                if self.cheat_counter > 0:
+                    print(f"Cheat counter reset from {self.cheat_counter} to 0.")  # Debug statement
+                self.cheat_counter = 0  # Reset the counter if any other key is pressed
 
             cell_value = self.game_model.check_player_position_cell_value()
             print(f"Cell value: {cell_value}")
             if cell_value == 0.75:
-
                 print("Player stepped on a cell with value 0.75!")
-
-                if user_input == "x":
+                if self.game_model.current_maze_index == len(self.game_model.visited_mazes) + len(
+                        self.game_model.mazes_to_visit) and user_input == "x":
+                    # Player reached the end of the last maze
+                    x = 'Win'
+                    print("Congratulations! You won the game!")
+                    result = self.show_maze_end_view(x)
+                    if result == "MainMenu":
+                        return "MainMenu"
+                elif user_input == "x":
                     print("Switching to next maze")
-
                     self.game_model.switch_to_next_maze()
-
+                    self.completed_mazes += 1
             elif cell_value == 0.6:
-
                 print("Player stepped on a cell with value 0.6!")
-
                 if user_input == "x":
                     print("Switching to previous maze")
-
                     self.game_model.switch_to_previous_maze()
 
             mob_index = self.game_model.check_mob_encounter()
@@ -100,23 +115,81 @@ class GameController:
                 self.game_model.save_game_state(self.save_file_name)
                 print(f"Game state saved to {self.save_file_name}")
 
-            self.game_model.update_game_state()
-
-            if self.game_model.is_game_over():
-                running = False
-
+            game_over = self.game_model.is_game_over()
+            if game_over == "Lose":
+                x = 'Lose'
+                print("Game Over! You lost the game.")
+                result = self.show_maze_end_view(x)
+                if result == "MainMenu":
+                    return "MainMenu"
             self.render_game(screen)
+        self.game_model.update_game_state()
 
-        pygame.quit()
+        pygame.display.quit()  # Quit the display here to ensure we can reinitialize it later
+
+    def teleport_to_end_portal(self):
+        for y in range(self.game_model.maze.height):
+            for x in range(self.game_model.maze.width):
+                if self.game_model.maze.maze[y, x] == 0.75:  # Find the blue portal (0.75)
+                    self.game_model.player.position.x = x
+                    self.game_model.player.position.y = y
+                    print(f"Teleported player to end portal at ({x}, {y})")  # Debug statement
+                    return
+
+    def show_maze_end_view(self, text):
+        self.maze_end_view = MazeEndView(self.game_view.screen, self.game_view.window_width,
+                                         self.game_view.window_height)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Left mouse button
+                        if self.maze_end_view.button_rect.collidepoint(event.pos):
+                            self.maze_end_view = None # Reset the game state
+                            return "MainMenu"
+
+            if text == "Win":
+                self.maze_end_view.draw()
+            elif text == "Lose":
+                self.maze_end_view.draw_end()
+
+            pygame.display.flip()
+
+    def reset_game(self):
+        self.game_model.lives = 5  # Reset lives to the initial value
+        self.game_model.score = 0  # Reset score to 0
+        self.game_model.current_maze_index = 0  # Reset the current maze index
+        self.game_model.visited_mazes = []  # Clear the visited mazes
+        self.game_model.mazes_to_visit = [self.game_model.maze4, self.game_model.maze3,
+                                          self.game_model.maze2]  # Reset the mazes to visit
+        self.game_model.maze = self.game_model.maze1  # Set the initial maze to maze1
+        self.game_model.mobs = self.game_model.mobs1  # Set the initial mobs to mobs1
+        self.game_model.mobs_positions = self.game_model.mobs_positions1  # Set the initial mob positions to mobs_positions1
 
     def render_game(self, screen):
         screen.fill(self.game_view.color_bg)
-        self.game_view.draw_maze(screen, self.game_model.maze)
+        maze_number = self.get_current_maze_number()  # Get the current maze number
+        self.game_view.draw_maze(screen, self.game_model.maze, maze_number)
         self.game_view.draw_player(screen, self.game_model.player)
         for mob in self.game_model.mobs:
             self.game_view.draw_enemy(screen, mob)
         self.game_view.draw_score(screen, self.game_model.score)
+        self.game_view.draw_lives(screen, self.game_model.lives)
         pygame.display.flip()
+
+    def get_current_maze_number(self):
+        if self.game_model.maze == self.game_model.maze1:
+            return 1
+        elif self.game_model.maze == self.game_model.maze2:
+            return 2
+        elif self.game_model.maze == self.game_model.maze3:
+            return 3
+        elif self.game_model.maze == self.game_model.maze4:
+            return 4
+        else:
+            return 0
 
     def __del__(self):
         self.game_model.close_trivia_manager()
@@ -206,9 +279,6 @@ class InGameMenuController:
                         if clicked_option == "Save":
                             self.sound_manager.play_button_sound()
                             self.model.save_game()
-                        elif clicked_option == "Load":
-                            self.sound_manager.play_button_sound()
-                            self.show_load_popup()
                         elif clicked_option == "Help":
                             self.sound_manager.play_button_sound()
                             self.model.show_help()
@@ -225,18 +295,18 @@ class InGameMenuController:
                 self.model.return_to_main_menu_flag = False
                 return "MainMenu"
 
-    def show_load_popup(self):
-        while True:
-            self.view.draw_load_popup(self.model.game_model.get_save_files())
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    clicked_save_file = self.view.get_clicked_save_file(event.pos,
-                                                                        self.model.game_model.get_save_files())
-                    self.sound_manager.play_button_sound()
-                    if clicked_save_file == "Back":
-                        self.sound_manager.play_button_sound()
-                        return
-                    elif clicked_save_file:
-                        self.model.load_game(clicked_save_file)
-                        self.sound_manager.play_button_sound()
-                        return
+    # def show_load_popup(self):
+    #     while True:
+    #         self.view.draw_load_popup(self.model.game_model.get_save_files())
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.MOUSEBUTTONDOWN:
+    #                 clicked_save_file = self.view.get_clicked_save_file(event.pos,
+    #                                                                     self.model.game_model.get_save_files())
+    #                 self.sound_manager.play_button_sound()
+    #                 if clicked_save_file == "Back":
+    #                     self.sound_manager.play_button_sound()
+    #                     return
+    #                 elif clicked_save_file:
+    #                     self.model.load_game(clicked_save_file)
+    #                     self.sound_manager.play_button_sound()
+    #                     return
