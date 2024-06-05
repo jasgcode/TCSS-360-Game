@@ -20,6 +20,7 @@ class GameController:
         self.menu_view = None  # Initialize menu_view to None
         self.menu_controller = None
         self.menu_open = False
+        self.m_press_count = 0  # Initialize counter for 'm' presses
 
     def run_game(self):
         pygame.init()  # Initialize Pygame
@@ -52,6 +53,8 @@ class GameController:
                 self.game_model.move_player(GameModel.get_position(-1, 0))
             elif user_input == "right":
                 self.game_model.move_player(GameModel.get_position(1, 0))
+            else:
+                self.handle_key_press(user_input)
 
             mob_index = self.game_model.check_mob_encounter()
             if mob_index is not None:
@@ -88,6 +91,21 @@ class GameController:
             self.render_game(screen)
 
         pygame.quit()
+
+    def handle_key_press(self, key):
+        if key == 'm':
+            self.m_press_count += 1
+            if self.m_press_count >= 5:
+                self.move_player_to_end_of_maze()
+                self.m_press_count = 0  # Reset the count
+        else:
+            self.m_press_count = 0  # Reset the count if any other key is pressed
+
+    def move_player_to_end_of_maze(self):
+        # Logic to move the player to the end of the maze
+        end_position = self.game_model.get_end_position()
+        self.game_model.player.set_position(end_position)
+        print("Cheat activated: Player moved to the end of the maze!")
 
     def render_game(self, screen):
         screen.fill(self.game_view.color_bg)
