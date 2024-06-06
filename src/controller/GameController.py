@@ -15,6 +15,7 @@ from src.view.GameMenuView import InGameMenuView
 
 class GameController:
     def __init__(self, game_model, game_view):
+        pygame.mixer.init()
         self.game_model = game_model
         self.game_view = game_view
         self.save_file_name = None
@@ -34,6 +35,10 @@ class GameController:
                                         self.game_view.cell_size)
         self.menu_view = InGameMenuView(screen, self.game_view)  # Create the menu_view with the screen
         self.menu_controller = InGameMenuController(self, self.menu_model, self.menu_view)  # Create the menu_controller
+
+        pygame.mixer.music.load("../BackgroundMusic.mp3")
+        pygame.mixer.music.play(-1)
+
         running = True
         if self.game_model.current_filename is not None:
             self.game_model.load_game_state(self.save_file_name)

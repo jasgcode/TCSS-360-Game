@@ -46,11 +46,12 @@ class InGameMenuView:
 
         help_text = [
             "Movement: Arrow keys and WASD Keys",
-            "Save: Press 'CTRL + S' or click save in the in game menu",
-            "Whenever you go on a red dot it will cause an encounter",
-            "Where it will show you a question and multiple choices",
+            "Save: Press 'CTRL + S' or click save in the in game menu.",
+            "Whenever you meet an officer it will cause an encounter",
+            "where it will show you a question and multiple choices.",
             "Click on the text to choose your answer",
             "Goal: Reach the exit"
+            "Good Luck!"
         ]
         for i, line in enumerate(help_text):
             text = self.font.render(line, True, (0, 0, 0))
