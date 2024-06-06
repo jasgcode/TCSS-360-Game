@@ -1,20 +1,21 @@
 import pygame
 
-
 class MenuView:
     def __init__(self, screen, model):
         self.screen = screen
         self.model = model
-        self.font_title = pygame.font.Font(None, 72)
-        self.font_options = pygame.font.Font(None, 36)
-        self.background_image = pygame.image.load('../images/MainMenu.JPG')
-        self.background_image = pygame.transform.scale(self.background_image, (screen.get_width(), screen.get_height()))
+        # Load the 8-bit font
+        self.font_title = pygame.font.Font("PressStart2P-Regular.ttf", 48)
+        self.font_options = pygame.font.Font("PressStart2P-Regular.ttf", 36)
+        self.background_image = pygame.image.load("../images/MainMenu.JPG").convert()  # Load the background image
+        self.background_image = pygame.transform.scale(self.background_image,
+                                                       (self.screen.get_width(), self.screen.get_height()))
 
     def draw_menu(self, show_difficulty_options=False, show_save_files=False, scroll_offset=0):
         self.screen.blit(self.background_image, (0, 0))
 
         # Draw the title
-        title_text = self.font_title.render("Escape the 7 Seas", True, (255, 255, 255))
+        title_text = self.font_title.render("Escape The Seven Seas", True, (255, 255, 255))
         title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, 100))
         self.screen.blit(title_text, title_rect)
 
@@ -107,4 +108,5 @@ class MenuView:
                     return 'scroll_up'
                 elif down_arrow_rect.collidepoint(pos):
                     return 'scroll_down'
+
         return None

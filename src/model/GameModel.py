@@ -280,6 +280,7 @@ class GameModel:
             'num_mobs': self.num_mobs,
             'mob_data': mob_data,  # Include mob_data in the game state
             'cell_size': self.cell_size,
+            'lives': self.lives,
         }
 
         with open(file_path, 'wb') as file:
@@ -326,3 +327,4 @@ class GameModel:
 
             # Initialize the TriviaManager based on the loaded difficulty level
             self.set_difficulty_level(self.difficulty_level)
+            self.lives = game_state['lives']
