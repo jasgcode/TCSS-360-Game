@@ -1,5 +1,4 @@
 import os
-
 import pygame
 
 from src.model.GameMenuModel import GameMenuModel
@@ -8,7 +7,6 @@ from src.model.MenuModel import MenuModel
 from src.model.sound.SoundManager import SoundManager
 from src.view.gameView import GameView
 from src.view.MazeEndView import MazeEndView
-
 from src.view.menuView import MenuView
 from src.view.GameMenuView import InGameMenuView
 
@@ -73,25 +71,37 @@ class GameController:
 
             cell_value = self.game_model.check_player_position_cell_value()
             print(f"Cell value: {cell_value}")
-            if cell_value == 0.75:
+            if cell_value == 0.75 and user_input == "x":
                 print("Player stepped on a cell with value 0.75!")
-                if self.game_model.current_maze_index == len(self.game_model.visited_mazes) + len(
-                        self.game_model.mazes_to_visit) and user_input == "x":
-                    # Player reached the end of the last maze
-                    x = 'Win'
-                    print("Congratulations! You won the game!")
-                    result = self.show_maze_end_view(x)
-                    if result == "MainMenu":
-                        return "MainMenu"
-                elif user_input == "x":
-                    print("Switching to next maze")
-                    self.game_model.switch_to_next_maze()
-                    self.completed_mazes += 1
-            elif cell_value == 0.6:
+                trivia_question = self.game_model.get_trivia_question()
+                if trivia_question:
+                    is_correct = self.game_view.show_question_popup(
+                        screen,
+                        trivia_question.question_text,
+                        trivia_question.answer_choices,
+                        trivia_question.correct_answer_index
+                    )
+                    if is_correct:
+                        print("Correct answer!")
+                        if self.game_model.current_maze_index == len(self.game_model.visited_mazes) + len(
+                                self.game_model.mazes_to_visit):
+                            # Player reached the end of the last maze
+                            x = 'Win'
+                            print("Congratulations! You won the game!")
+                            result = self.show_maze_end_view(x)
+                            if result == "MainMenu":
+                                return "MainMenu"
+                        else:
+                            print("Switching to next maze")
+                            self.game_model.switch_to_next_maze()
+                            self.completed_mazes += 1
+                    else:
+                        print("Wrong answer!")
+                        # Optionally, handle the wrong answer case here
+            elif cell_value == 0.6 and user_input == "x":
                 print("Player stepped on a cell with value 0.6!")
-                if user_input == "x":
-                    print("Switching to previous maze")
-                    self.game_model.switch_to_previous_maze()
+                print("Switching to previous maze")
+                self.game_model.switch_to_previous_maze()
 
             mob_index = self.game_model.check_mob_encounter()
             if mob_index is not None:
@@ -152,7 +162,7 @@ class GameController:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:  # Left mouse button
                         if self.maze_end_view.button_rect.collidepoint(event.pos):
-                            self.maze_end_view = None # Reset the game state
+                            self.maze_end_view = None  # Reset the game state
                             return "MainMenu"
 
             if text == "Win":
