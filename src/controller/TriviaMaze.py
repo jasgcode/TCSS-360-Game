@@ -42,6 +42,7 @@ def main():
             result = game_controller.run_game()
             if result == "MainMenu":
                 continue
+
         else:
             break
 

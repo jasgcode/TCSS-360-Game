@@ -231,6 +231,10 @@ class MenuController:
                             self.sound_manager.play_button_sound()
                             show_difficulty_options = False
                             show_save_files = True
+                        # Add this code to the run method
+                        # Add this code to the run method
+                        elif selected_option == 'About':
+                            self.view.show_about_popup()
                         elif selected_option == 'back':
                             self.sound_manager.play_button_sound()
                             show_difficulty_options = False

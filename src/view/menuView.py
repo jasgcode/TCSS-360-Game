@@ -7,6 +7,7 @@ class MenuView:
         # Load the 8-bit font
         self.font_title = pygame.font.Font("PressStart2P-Regular.ttf", 48)
         self.font_options = pygame.font.Font("PressStart2P-Regular.ttf", 36)
+        self.font_about = pygame.font.Font("PressStart2P-Regular.ttf", 18)
         self.background_image = pygame.image.load("../images/MainMenu.JPG").convert()  # Load the background image
         self.background_image = pygame.transform.scale(self.background_image,
                                                        (self.screen.get_width(), self.screen.get_height()))
@@ -20,7 +21,7 @@ class MenuView:
         self.screen.blit(title_text, title_rect)
 
         if not show_difficulty_options and not show_save_files:
-            # Draw the "New Game" and "Load Game" options
+            # Draw the "New Game", "Load Game", and "About" options
             new_game_text = self.font_options.render("New Game", True, (255, 255, 255))
             new_game_rect = new_game_text.get_rect(center=(self.screen.get_width() // 2, 200))
             self.screen.blit(new_game_text, new_game_rect)
@@ -28,6 +29,10 @@ class MenuView:
             load_game_text = self.font_options.render("Load Game", True, (255, 255, 255))
             load_game_rect = load_game_text.get_rect(center=(self.screen.get_width() // 2, 250))
             self.screen.blit(load_game_text, load_game_rect)
+
+            about_text = self.font_options.render("About", True, (255, 255, 255))
+            about_rect = about_text.get_rect(center=(self.screen.get_width() // 2, 300))
+            self.screen.blit(about_text, about_rect)
         else:
             # Draw the "Back" button
             back_text = self.font_options.render("Back", True, (255, 255, 255))
@@ -77,6 +82,12 @@ class MenuView:
             if load_game_rect.collidepoint(pos):
                 return 'load_game'
 
+            # Check if "About" is clicked
+            about_text = self.font_options.render("About", True, (0, 0, 0))
+            about_rect = about_text.get_rect(center=(self.screen.get_width() // 2, 300))
+            if about_rect.collidepoint(pos):
+                return 'About'
+
         else:
             # Check if "Back" is clicked
             back_text = self.font_options.render("Back", True, (0, 0, 0))
@@ -110,3 +121,53 @@ class MenuView:
                     return 'scroll_down'
 
         return None
+
+    def show_about_popup(self):
+        popup_width = 1280
+        popup_height = 720
+        popup_rect = pygame.Rect((self.screen.get_width() - popup_width) // 2,
+                                 (self.screen.get_height() - popup_height) // 2, popup_width, popup_height)
+
+        while True:
+            self.screen.fill((0, 0, 0))
+
+            # Draw the popup background
+            pygame.draw.rect(self.screen, (255, 255, 255), popup_rect)
+
+            # Draw the popup title
+            title_font = pygame.font.Font("PressStart2P-Regular.ttf", 24)
+            title_text = title_font.render("About Escape The Seven Seas", True, (0, 0, 0))
+            title_rect = title_text.get_rect(midtop=(popup_rect.centerx, popup_rect.top + 20))
+            self.screen.blit(title_text, title_rect)
+
+            # Draw the game information
+            info = [
+                "Escape The Seven Seas is a thrilling maze game",
+                "where you navigate through treacherous mazes",
+                "filled with mobs and challenges. Your goal is",
+                "to reach the end of each maze while answering",
+                "trivia questions correctly to progress. Can",
+                "you escape all the mazes and emerge victorious?"
+            ]
+            info_font = pygame.font.Font("PressStart2P-Regular.ttf", 16)
+            for i, line in enumerate(info):
+                text = info_font.render(line, True, (0, 0, 0))
+                text_rect = text.get_rect(topleft=(popup_rect.left + 20, popup_rect.top + 80 + i * 30))
+                self.screen.blit(text, text_rect)
+
+            # Draw the close button
+            close_font = pygame.font.Font("PressStart2P-Regular.ttf", 18)
+            close_text = close_font.render("Close", True, (0, 0, 0))
+            close_rect = close_text.get_rect(midbottom=(popup_rect.centerx, popup_rect.bottom - 20))
+            pygame.draw.rect(self.screen, (200, 200, 200), close_rect, 2)
+            self.screen.blit(close_text, close_rect)
+
+            pygame.display.flip()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if close_rect.collidepoint(event.pos):
+                        return
