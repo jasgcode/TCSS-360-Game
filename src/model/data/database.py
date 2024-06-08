@@ -4,6 +4,9 @@ import os
 
 class Database:
     def __init__(self, db_name):
+        """
+        Initialize the database connection.
+        """
         # Get the directory path of the current script
         script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,6 +18,10 @@ class Database:
         self.cursor = self.conn.cursor()
 
     def get_random_question(self, difficulty):
+        """
+        Retrieve a random trivia question based on the difficulty.
+        """
+
         self.cursor.execute('''
             SELECT question_text, answer_choices, correct_answer_index
             FROM questions
@@ -32,4 +39,7 @@ class Database:
             return None
 
     def close(self):
+        """
+        Close the database connection.
+        """
         self.conn.close()

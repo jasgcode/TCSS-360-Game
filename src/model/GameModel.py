@@ -13,6 +13,9 @@ import random
 
 class GameModel:
     def __init__(self):
+        """
+        Initialize the GameModel with default values.
+        """
         self.maze = None
         self.maze1 = None
         self.maze2 = None
@@ -46,6 +49,9 @@ class GameModel:
         self.current_maze_index = 0
 
     def initialize_game(self, width, height, cell_size):
+        """
+        Initialize the game by generating mazes, mobs, and setting initial values.
+        """
         self.maze1 = self.generate_maze(width, height)
         self.maze2 = self.generate_maze(width, height)
         self.maze3 = self.generate_maze(width, height)
@@ -85,11 +91,17 @@ class GameModel:
 
     @staticmethod
     def generate_maze(width, height):
+        """
+        Generate a maze with the specified width and height.
+        """
         maze = Maze(width, height)
         maze.create()
         return maze
 
     def set_difficulty_level(self, difficulty_level):
+        """
+        Set the game's difficulty level and adjust related parameters.
+        """
         self.difficulty_level = difficulty_level
         self.trivia_manager = TriviaManager(difficulty_level.lower())
         if difficulty_level == "Easy":
@@ -110,13 +122,22 @@ class GameModel:
 
     @staticmethod
     def get_position(x, y):
+        """
+        Get a Position object with the specified x and y coordinates.
+        """
         return Position(x, y)
 
     def update_game_state(self):
+        """
+        Update the game state by incrementing timers.
+        """
         self.timer += 1
         self.trivia_question_timer += 1
 
     def switch_to_next_maze(self):
+        """
+        Switch to the next maze in the sequence.
+        """
         self.current_maze_index += 1
         if self.mazes_to_visit:
             self.visited_mazes.append(self.maze)
@@ -134,6 +155,9 @@ class GameModel:
             self.mobs_positions = self.mobs_positions2
 
     def switch_to_previous_maze(self):
+        """
+        Switch to the previous maze in the sequence.
+        """
         self.current_maze_index -= 1
         if self.visited_mazes:
             self.mazes_to_visit.append(self.maze)
@@ -152,9 +176,15 @@ class GameModel:
             self.mobs_positions = self.mobs_positions3
 
     def get_current_maze_index(self):
+        """
+        Get the current maze index.
+        """
         return self.current_maze_index
 
     def check_player_position_cell_value(self):
+        """
+        Check the value of the cell at the player's current position.
+        """
         cell_value = self.maze.maze[self.player.position.y][self.player.position.x]
         if abs(cell_value - 0.75) < 1e-6:
             print("0.75")
@@ -165,6 +195,9 @@ class GameModel:
         return None
 
     def mob_spawn(self, maze):
+        """
+        Spawn a mob at a random walkable position in the maze.
+        """
         while True:
             x = random.randrange(1, maze.width - 1)
             y = random.randrange(1, maze.height - 1)
@@ -173,6 +206,9 @@ class GameModel:
                 return position
 
     def check_mob_encounter(self):
+        """
+        Check if the player encounters a mob and return the mob index if an encounter occurs.
+        """
         for i, mob_position in enumerate(self.mobs_positions):
             if self.player.position.x == mob_position.x and self.player.position.y == mob_position.y:
                 if self.mobs[i].fight:
@@ -180,19 +216,34 @@ class GameModel:
         return None
 
     def return_button_sound(self, event):
+        """
+        Play the button sound effect.
+        """
         self.sound_manager.play_button_sound(event)
 
     def get_cell_size(self):
+        """
+        Get the cell size.
+        """
         return self.cell_size
 
     def move_player(self, direction):
+        """
+        Move the player in the specified direction.
+        """
         self.player.move(direction, self.maze)
 
     def remove_mob(self, mob_index):
+        """
+        Remove a mob from the game based on the index.
+        """
         self.mobs.pop(mob_index)
         self.mobs_positions.pop(mob_index)
 
     def is_game_over(self):
+        """
+        Check if the game is over based on the player's position and lives.
+        """
         if self.player.position == Position(self.maze.height - 2, self.maze.width - 3):
             if not self.mazes_to_visit:
                 # Player reached the end of the last maze
@@ -207,29 +258,48 @@ class GameModel:
         else:
             # Game is not over yet
             return None
+
     def should_ask_trivia_question(self):
+        """
+        Check if it is time to ask a trivia question based on the timer.
+        """
         return self.trivia_question_timer >= self.trivia_question_interval
 
     def answer_trivia_question_correctly(self):
+        """
+        Handle the event of answering a trivia question correctly.
+        """
         self.score += 10
         self.trivia_question_timer = 0
 
     def answer_trivia_question_incorrectly(self):
+        """
+        Handle the event of answering a trivia question incorrectly.
+        """
         self.score -= 5
         self.trivia_question_timer = 0
         self.lives -= 1
 
     def get_trivia_question(self):
+        """
+        Retrieve a trivia question from the TriviaManager.
+        """
         if self.trivia_manager:
             return self.trivia_manager.get_trivia_question()
         else:
             return None
 
     def close_trivia_manager(self):
+        """
+        Close the TriviaManager's database connection.
+        """
         if self.trivia_manager:
             self.trivia_manager.close_database()
 
     def generate_save_file_name(self):
+        """
+        Generate a unique save file name based on the number of existing save files.
+        """
         save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
@@ -241,6 +311,9 @@ class GameModel:
         return file_name
 
     def get_save_files(self):
+        """
+        Get a list of existing save files.
+        """
         save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
         if not os.path.exists(save_directory):
             os.makedirs(save_directory)
@@ -249,6 +322,9 @@ class GameModel:
         return save_files
 
     def save_game_state(self, file_name):
+        """
+        Save the current game state to a file.
+        """
         if file_name is None:
             file_name = self.generate_save_file_name()
         save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
@@ -289,6 +365,9 @@ class GameModel:
         self.current_filename = file_name
 
     def load_game_state(self, file_name):
+        """
+        Load a game state from a file.
+        """
         save_directory = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
         file_path = os.path.join(save_directory, file_name)
         self.current_filename = file_name

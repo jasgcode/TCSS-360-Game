@@ -5,6 +5,10 @@ import random
 class Cells:
 
     def generator(self, cx, cy, grid):
+        """
+        Generate cells for the maze using a recursive backtracking algorithm.
+        """
+
         if cy < 0 or cy >= grid.shape[0] or cx < 0 or cx >= grid.shape[1]:
             return
 

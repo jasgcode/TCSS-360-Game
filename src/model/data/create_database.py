@@ -4,6 +4,9 @@ import sqlite3
 
 # This script creates a SQLite database and populates it with trivia questions.
 def create_database():
+    """
+    Create the trivia database and the questions table if it doesn't exist.
+    """
     script_dir = os.path.dirname(os.path.abspath(__file__))
     db_path = os.path.join(script_dir, 'trivia.db')
     conn = sqlite3.connect(db_path)
@@ -45,8 +48,11 @@ def create_database():
     conn.commit()
     conn.close()
 
-def populate_database():
 
+def populate_database():
+    """
+    Populate the trivia database with questions.
+    """
     questions = [
         {
             'question_text': 'What is the main ingredient in beer that gives it its color?',

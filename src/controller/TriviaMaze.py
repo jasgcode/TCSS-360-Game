@@ -8,6 +8,9 @@ from src.view.gameView import GameView
 
 
 def main():
+    """
+    Main function to initialize and run the game.
+    """
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption("Maze Game")

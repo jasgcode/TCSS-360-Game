@@ -2,6 +2,9 @@ import pygame
 
 class MenuView:
     def __init__(self, screen, model):
+        """
+        Initialize the MenuView with the screen and model.
+        """
         self.screen = screen
         self.model = model
         # Load the 8-bit font
@@ -12,6 +15,9 @@ class MenuView:
                                                        (self.screen.get_width(), self.screen.get_height()))
 
     def draw_menu(self, show_difficulty_options=False, show_save_files=False, scroll_offset=0):
+        """
+        Draw the main menu and its options on the screen.
+        """
         self.screen.blit(self.background_image, (0, 0))
 
         # Draw the title
@@ -64,6 +70,9 @@ class MenuView:
         pygame.display.flip()
 
     def get_selected_option(self, pos, show_difficulty_options=False, show_save_files=False, scroll_offset=0):
+        """
+        Get the menu option that was clicked based on the mouse position.
+        """
         if not show_difficulty_options and not show_save_files:
             # Check if "New Game" is clicked
             new_game_text = self.font_options.render("New Game", True, (0, 0, 0))

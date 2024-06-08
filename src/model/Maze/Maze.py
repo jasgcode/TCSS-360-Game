@@ -7,8 +7,10 @@ sys.setrecursionlimit(8000)
 
 
 class Maze:
-
     def __init__(self, width, height):
+        """
+        Initialize the maze with specified width and height.
+        """
         self.end_pos = None
         self.start_pos = None
         if width % 2 == 0:
@@ -23,6 +25,9 @@ class Maze:
         self.maze1start = False
 
     def create(self):
+        """
+        Create the maze using a recursive backtracking algorithm.
+        """
         maze = np.ones((self.height, self.width), dtype=float)
         # mid_height = self.height // 2
         # mid_width = self.width // 2
@@ -90,5 +95,8 @@ class Maze:
     #     self.Cells.generator(sx, sy, sub_maze)
 
     def is_walkable(self, position):
+        """
+        Check if the position is walkable (not a wall) in the maze.
+        """
         return not (self.width > position.x > 0 == self.maze[position.y, position.x] and
                     0 < position.y < self.height)

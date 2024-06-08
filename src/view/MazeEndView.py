@@ -2,6 +2,9 @@ import pygame
 
 class MazeEndView:
     def __init__(self, screen, width, height):
+        """
+        Initialize the MazeEndView with the screen, width, and height.
+        """
         self.screen = screen
         self.width = width
         self.height = height
@@ -14,6 +17,9 @@ class MazeEndView:
         self.button_rect = pygame.Rect(self.width // 2 - 100, self.height // 2 + 50, 200, 50)
 
     def draw(self):
+        """
+        Draw the winning message on the screen.
+        """
         self.screen.fill((240, 240, 220))  # Fill screen with gray
         self.screen.blit(self.congrats_text,
                          (self.width // 2 - self.congrats_text.get_width() // 2, self.height // 2 - 100))
@@ -24,6 +30,9 @@ class MazeEndView:
         pygame.display.flip()
 
     def draw_end(self):
+        """
+        Draw the losing message on the screen.
+        """
         self.screen.fill((240, 240, 220))  # Fill screen with gray
         self.screen.blit(self.end_text,
                          (self.width // 2 - self.end_text.get_width() // 2, self.height // 2 - 100))
@@ -34,6 +43,9 @@ class MazeEndView:
         pygame.display.flip()
 
     def handle_event(self, event):
+        """
+        Handle the event to detect clicks on the "Main Menu" button.
+        """
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.button_rect.collidepoint(event.pos):
                 return "main_menu"

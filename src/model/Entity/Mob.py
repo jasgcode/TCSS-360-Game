@@ -4,11 +4,17 @@ from queue import PriorityQueue
 
 class Mob(Entity):
     def __init__(self, position):
+        """
+        Initialize the mob with a position.
+        """
         super().__init__(position)
         self.path = []
         self.fight = True
 
     def find_path_to_player(self, maze, player_position):
+        """
+        Find the shortest path to the player using Dijkstra's algorithm.
+        """
         distance = [[float('inf')] * maze.width for _ in range(maze.height)]
         distance[self.position.y][self.position.x] = 0
 
@@ -52,6 +58,10 @@ class Mob(Entity):
         return path
 
     def move_along_path(self, maze):
+        """
+        Move the mob along the calculated path.
+        """
+
         if len(self.path) > 0:
             next_position = self.path.pop(0)
             direction = Position(next_position.x - self.position.x, next_position.y - self.position.y)

@@ -26,6 +26,9 @@ class GameController:
         self.maze_end_view = None  # Initialize MazeEndView to None
 
     def run_game(self):
+        """
+        Main game loop. Handles user input, game state updates, and rendering.
+        """
         screen = pygame.display.set_mode(
             (self.game_view.window_width, self.game_view.window_height))  # Create a window surface
         self.game_model.initialize_game(self.game_view.window_width // self.game_view.cell_size,
@@ -143,6 +146,9 @@ class GameController:
         pygame.display.quit()  # Quit the display here to ensure we can reinitialize it later
 
     def teleport_to_end_portal(self):
+        """
+        Teleport the player to the end portal.
+        """
         for y in range(self.game_model.maze.height):
             for x in range(self.game_model.maze.width):
                 if self.game_model.maze.maze[y, x] == 0.75:  # Find the blue portal (0.75)
@@ -152,6 +158,9 @@ class GameController:
                     return
 
     def show_maze_end_view(self, text):
+        """
+        Display the maze end view with a message.
+        """
         self.maze_end_view = MazeEndView(self.game_view.screen, self.game_view.window_width,
                                          self.game_view.window_height)
         while True:
@@ -173,6 +182,9 @@ class GameController:
             pygame.display.flip()
 
     def reset_game(self):
+        """
+        Reset the game state to its initial values.
+        """
         self.game_model.lives = 5  # Reset lives to the initial value
         self.game_model.score = 0  # Reset score to 0
         self.game_model.current_maze_index = 0  # Reset the current maze index
@@ -184,6 +196,9 @@ class GameController:
         self.game_model.mobs_positions = self.game_model.mobs_positions1  # Set the initial mob positions to mobs_positions1
 
     def render_game(self, screen):
+        """
+        Render the game view.
+        """
         screen.fill(self.game_view.color_bg)
         maze_number = self.get_current_maze_number()  # Get the current maze number
         self.game_view.draw_maze(screen, self.game_model.maze, maze_number)
@@ -195,6 +210,9 @@ class GameController:
         pygame.display.flip()
 
     def get_current_maze_number(self):
+        """
+        Get the current maze number.
+        """
         if self.game_model.maze == self.game_model.maze1:
             return 1
         elif self.game_model.maze == self.game_model.maze2:
@@ -207,6 +225,9 @@ class GameController:
             return 0
 
     def __del__(self):
+        """
+        Destructor to close the trivia manager.
+        """
         self.game_model.close_trivia_manager()
 
 
@@ -217,6 +238,9 @@ class MenuController:
         self.sound_manager = SoundManager()
 
     def run(self):
+        """
+        Main loop for the menu. Handles user input and menu navigation.
+        """
         saves = os.path.join(os.path.dirname(__file__), '..', '..', 'saves')
         self.model.load_save_files(saves)
         show_difficulty_options = False
@@ -272,10 +296,16 @@ class InGameMenuController:
         self.sound_manager = SoundManager()
 
     def handle_event(self, event):
+        """
+        Handle the escape key event to show the in-game menu.
+        """
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             self.show_menu()
 
     def show_menu(self):
+        """
+        Display the in-game menu and handle user input.
+        """
         while True:
             if self.model.show_help_flag:
                 back_rect = self.view.draw_help_popup()

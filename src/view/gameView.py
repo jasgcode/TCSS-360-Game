@@ -3,6 +3,9 @@ import pygame
 
 class GameView:
     def __init__(self, window_width, window_height, cell_size):
+        """
+        Initialize the GameView with window dimensions and cell size.
+        """
         self.window_width = window_width
         self.window_height = window_height
         self.cell_size = cell_size
@@ -20,6 +23,9 @@ class GameView:
         self.orange_portal_image = self.load_and_scale_image("../images/orange_portal.png")
 
     def load_and_scale_image(self, path):
+        """
+        Load and scale an image from the specified path.
+        """
         try:
             image = pygame.image.load(path).convert_alpha()  # Load the image with transparency
             image = pygame.transform.scale(image, (self.cell_size, self.cell_size))  # Scale it to cell size
@@ -30,6 +36,9 @@ class GameView:
             return None
 
     def draw(self, game_model):
+        """
+        Draw the game view based on the current game model state.
+        """
         print("Drawing game view...")  # Debug statement to verify method call
         self.screen.fill(self.color_bg)  # Fill screen with gray before drawing
         for y in range(game_model.maze.height):
@@ -52,6 +61,9 @@ class GameView:
         pygame.display.flip()
 
     def draw_maze(self, screen, maze, maze_number):
+        """
+        Draw the maze on the screen.
+        """
         screen.fill(self.color_bg)  # Fill the screen with the background color
         for y in range(maze.height):
             for x in range(maze.width):
@@ -65,12 +77,18 @@ class GameView:
         self.draw_maze_number(screen, maze_number)  # Draw the maze number
 
     def draw_maze_number(self, screen, maze_number):
+        """
+        Draw the maze number on the screen.
+        """
         text = self.font.render(f"Level: {maze_number}", True, self.color_text)
         text_rect = text.get_rect()
         text_rect.topleft = (10, 10)  # Position at the top left with a 10-pixel margin
         screen.blit(text, text_rect)
 
     def draw_player(self, screen, player):
+        """
+        Draw the player on the screen.
+        """
         x, y = player.position.x, player.position.y
         if self.player_image:
             screen.blit(self.player_image, (x * self.cell_size, y * self.cell_size))
@@ -80,6 +98,9 @@ class GameView:
                                self.cell_size // 2)
 
     def draw_enemy(self, screen, mob):
+        """
+        Draw the enemy (mob) on the screen.
+        """
         x, y = mob.position.x, mob.position.y
         if self.mob_image:
             screen.blit(self.mob_image, (x * self.cell_size, y * self.cell_size))
@@ -89,18 +110,27 @@ class GameView:
                                self.cell_size // 2)
 
     def draw_score(self, screen, score):
+        """
+        Draw the player's score on the screen.
+        """
         text = self.font.render(f"Score: {score}", True, self.color_text)
         text_rect = text.get_rect()
         text_rect.topright = (self.window_width - 10, 10)  # Position at the top right with a 10-pixel margin
         screen.blit(text, text_rect)
 
     def draw_lives(self, screen, lives):
+        """
+        Draw the player's remaining lives on the screen.
+        """
         text = self.font.render(f"Lives: {lives}", True, self.color_text)
         text_rect = text.get_rect()
         text_rect.bottomright = (self.window_width - 10, self.window_height-10)  # Position at the top right with a 10-pixel margin
         screen.blit(text, text_rect)
 
     def show_question_popup(self, screen, question, choices, correct_choice):
+        """
+        Show a popup with a trivia question and handle user input for answering the question.
+        """
         popup_width = 900
         popup_height = 600
         popup_x = (self.window_width - popup_width) // 2
@@ -145,6 +175,9 @@ class GameView:
 
     @staticmethod
     def get_user_input():
+        """
+        Get the user's input from the keyboard and handle specific key events.
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return "quit"
