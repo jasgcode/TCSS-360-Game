@@ -75,8 +75,10 @@ class GameController:
             print(f"Cell value: {cell_value}")
             if cell_value == 0.75:
                 print("Player stepped on a cell with value 0.75!")
+
+
                 if self.game_model.current_maze_index == len(self.game_model.visited_mazes) + len(
-                        self.game_model.mazes_to_visit) and user_input == "x":
+                        self.game_model.mazes_to_visit) and user_input == "x" and self.game_model.maze.end_pos is False:
                     # Player reached the end of the last maze
                     x = 'Win'
                     print("Congratulations! You won the game!")
@@ -84,9 +86,27 @@ class GameController:
                     if result == "MainMenu":
                         return "MainMenu"
                 elif user_input == "x":
-                    print("Switching to next maze")
-                    self.game_model.switch_to_next_maze()
-                    self.completed_mazes += 1
+                    if self.game_model.maze.end_question is True:
+                        trivia_question = self.game_model.get_trivia_question()
+                        if trivia_question:
+                            is_correct = self.game_view.show_question_popup(
+                                screen,
+                                trivia_question.question_text,
+                                trivia_question.answer_choices,
+                                trivia_question.correct_answer_index
+                            )
+                            if is_correct:
+                                print("Correct answer!")
+                                self.game_model.answer_trivia_question_correctly()
+                                self.game_model.maze.end_question = False
+                            else:
+                                print("Wrong answer!")
+                                self.game_model.answer_trivia_question_incorrectly()
+                                self.game_model.maze.end_question = True
+                        if self.game_model.maze.end_question is False:
+                            print("Switching to next maze")
+                            self.game_model.switch_to_next_maze()
+                            self.completed_mazes += 1
             elif cell_value == 0.6:
                 print("Player stepped on a cell with value 0.6!")
                 if user_input == "x":
