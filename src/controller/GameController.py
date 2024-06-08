@@ -103,10 +103,11 @@ class GameController:
                                 print("Wrong answer!")
                                 self.game_model.answer_trivia_question_incorrectly()
                                 self.game_model.maze.end_question = True
-                        if self.game_model.maze.end_question is False:
-                            print("Switching to next maze")
-                            self.game_model.switch_to_next_maze()
-                            self.completed_mazes += 1
+                    if self.game_model.maze.end_question is False:
+                        print("Switching to next maze")
+                        self.game_model.switch_to_next_maze()
+                        self.completed_mazes += 1
+
             elif cell_value == 0.6:
                 print("Player stepped on a cell with value 0.6!")
                 if user_input == "x":
