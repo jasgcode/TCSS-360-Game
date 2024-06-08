@@ -21,6 +21,7 @@ class Maze:
         self.Cells = Cells()
         self.maze = None
         self.maze1start = False
+        self.end_question = True
 
     def create(self):
         maze = np.ones((self.height, self.width), dtype=float)

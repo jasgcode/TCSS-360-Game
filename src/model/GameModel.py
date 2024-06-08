@@ -207,6 +207,7 @@ class GameModel:
         else:
             # Game is not over yet
             return None
+
     def should_ask_trivia_question(self):
         return self.trivia_question_timer >= self.trivia_question_interval
 
