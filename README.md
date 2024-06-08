@@ -39,7 +39,7 @@ To install and run the game locally, follow these steps:
 
 4. Install required dependencies:
     ```sh
-    pip install -r requirements.txt
+    pip install pygame
     ```
 
 5. Run the game:
