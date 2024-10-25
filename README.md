@@ -59,10 +59,3 @@ After starting the game, the main menu provides options to start a new game, acc
 - **Trivia Questions:** Answer alcohol-related trivia questions to progress.
 - **Score and Lives:** Keep track of your score and remaining lives.
 
-## System Requirements
-- **Hardware:** Personal computers with a minimum of 4GB RAM and a dual-core processor.
-- **Operating Systems:** Windows 10 or later, macOS 10.14 or later, or Linux (Ubuntu 18.04 or later).
-- **Software Dependencies:** Python 3.6 or later, Pygame 2.0 or later.
-
-## License
-This project is licensed under the MIT License.
